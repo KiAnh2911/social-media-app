@@ -1,13 +1,16 @@
 <script setup>
 import { reactive } from 'vue'
+import PostItem from '@/components/PostItem.vue'
 
 const userProfile = reactive({})
+console.log('userProfile', userProfile)
 const userPost = reactive([])
+console.log('userPost', userPost)
 </script>
 
 <template>
-  <div class="max-w-[900px] mx-auto">
-    <div class="flex items-start justify-between gap-20">
+  <div class="max-w-[900px] mx-auto py-10">
+    <div class="flex items-start justify-between gap-20 pb-10 mb-10 border-b">
       <div class="w-[220px] h-[220px]">
         <img
           src="https://images.pexels.com/photos/26741269/pexels-photo-26741269/free-photo-of-a-woman-in-leather-boots-sitting-on-the-ground.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
@@ -31,6 +34,10 @@ const userPost = reactive([])
         </div>
       </div>
     </div>
-    <div>post</div>
+    <div class="flex flex-col gap-5">
+      <div v-for="n in 10" :key="n">
+        <PostItem />
+      </div>
+    </div>
   </div>
 </template>

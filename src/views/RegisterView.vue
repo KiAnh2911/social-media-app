@@ -1,6 +1,10 @@
 <script setup>
+import validateEmail from '@/utils/validate-email'
 import { reactive } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+// import api from '@/services/api-services'
+
+const router = useRouter()
 
 const obj = reactive({
   username: '',
@@ -8,15 +12,110 @@ const obj = reactive({
   firstName: '',
   lastName: '',
   gender: '',
-  password: ''
+  password: '',
+  rewritepassword: '',
+  validation: {
+    username: null,
+    email: null,
+    firstName: null,
+    lastName: null,
+    gender: null,
+    password: null,
+    rewritepassword: null
+  }
 })
 
-const handleSignUp = () => {}
+const handleSignUp = () => {
+  let isValid = true
+
+  if (!obj.email) {
+    obj.validation.email = 'Email is required.'
+    isValid = false
+  } else if (!validateEmail(obj.email)) {
+    obj.validation.email = 'Email is not valid.'
+    isValid = false
+  } else {
+    obj.validation.email = null
+  }
+
+  if (!obj.username) {
+    obj.validation.username = 'Username is required.'
+    isValid = false
+  } else if (obj.username.length < 6) {
+    obj.validation.username = 'You need to enter 6 characters or more'
+    isValid = false
+  } else {
+    obj.validation.username = null
+  }
+
+  if (!obj.firstName) {
+    obj.validation.firstName = 'First name is required.'
+    isValid = false
+  } else {
+    obj.validation.firstName = null
+  }
+
+  if (!obj.lastName) {
+    obj.validation.lastName = 'Last name is required.'
+    isValid = false
+  } else {
+    obj.validation.lastName = null
+  }
+
+  if (!obj.gender) {
+    obj.validation.gender = 'Gender is required.'
+    isValid = false
+  } else {
+    obj.validation.gender = null
+  }
+
+  if (!obj.password) {
+    obj.validation.password = 'Password is required.'
+    isValid = false
+  } else if (obj.password.length < 6) {
+    obj.validation.password = 'You need to enter 6 characters or more'
+    isValid = false
+  } else {
+    obj.validation.password = null
+  }
+
+  if (!obj.rewritepassword) {
+    obj.validation.rewritepassword = 'Rewrite password is required.'
+    isValid = false
+  } else if (obj.password !== obj.rewritepassword) {
+    obj.validation.password = 'Password and rewrite password do not match'
+    obj.validation.rewritepassword = 'Password and rewrite password do not match'
+    isValid = false
+  } else {
+    obj.validation.rewritepassword = null
+  }
+
+  if (isValid) {
+    let data = {
+      username: obj.username,
+      email: obj.email,
+      firstName: obj.firstName,
+      lastName: obj.lastName,
+      gender: obj.gender,
+      password: obj.password
+    }
+    // call api
+    try {
+      // api.register(data)
+      console.log(data)
+      router.push({ name: 'Login' })
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+}
 </script>
 
 <template>
   <section className="bg-gray-50 dark:bg-gray-900">
-    <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
+    <div
+      className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"
+    >
       <div
         className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-[550px] xl:p-0 dark:bg-gray-800 dark:border-gray-700"
       >
@@ -37,12 +136,14 @@ const handleSignUp = () => {}
                 </label>
                 <input
                   type="email"
-                  name="email"
+                  v-model="obj.email"
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
-                  required
                 />
+                <span v-if="obj.validation.email" class="text-red-500">{{
+                  obj.validation.email
+                }}</span>
               </div>
               <div>
                 <label
@@ -53,12 +154,14 @@ const handleSignUp = () => {}
                 </label>
                 <input
                   type="text"
-                  name="username"
+                  v-model="obj.username"
                   id="username"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="hoangki2911"
-                  required
                 />
+                <span v-if="obj.validation.username" class="text-red-500">{{
+                  obj.validation.username
+                }}</span>
               </div>
               <div>
                 <label
@@ -69,12 +172,14 @@ const handleSignUp = () => {}
                 </label>
                 <input
                   type="text"
-                  name="firstName"
+                  v-model="obj.firstName"
                   id="firstName"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="hoangki2911"
-                  required
                 />
+                <span v-if="obj.validation.firstName" class="text-red-500">{{
+                  obj.validation.firstName
+                }}</span>
               </div>
               <div>
                 <label
@@ -85,46 +190,67 @@ const handleSignUp = () => {}
                 </label>
                 <input
                   type="text"
-                  name="lastName"
+                  v-model="obj.lastName"
                   id="lastName"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="hoangki2911"
-                  required
                 />
+                <span v-if="obj.validation.lastName" class="text-red-500">{{
+                  obj.validation.lastName
+                }}</span>
               </div>
               <div>
                 <label
-                  htmlFor="password"
+                  htmlFor="new-password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Password
                 </label>
                 <input
                   type="password"
-                  name="password"
-                  id="password"
+                  v-model="obj.password"
+                  id="new-password"
+                  autocomplete
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
                 />
+                <span v-if="obj.validation.password" class="text-red-500">{{
+                  obj.validation.password
+                }}</span>
               </div>
               <div>
                 <label
-                  htmlFor="password"
+                  htmlFor="rPassword"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Rewrite Password
                 </label>
                 <input
                   type="password"
-                  name="password"
-                  id="password"
+                  v-model="obj.rewritepassword"
+                  id="rPassword"
                   placeholder="••••••••"
+                  autocomplete
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
                 />
+                <span v-if="obj.validation.rewritepassword" class="text-red-500">{{
+                  obj.validation.rewritepassword
+                }}</span>
               </div>
             </div>
+
+            <div class="flex items-center gap-5">
+              <label for="gender">Gender</label>
+              <select id="gender" v-model="obj.gender" class="flex-1 p-2">
+                <option value="" disabled>Chọn giới tính</option>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+              </select>
+            </div>
+            <span v-if="obj.validation.gender" class="text-red-500">{{
+              obj.validation.gender
+            }}</span>
+
             <button
               type="submit"
               className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"

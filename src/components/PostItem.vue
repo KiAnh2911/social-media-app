@@ -1,9 +1,7 @@
 <script setup></script>
 
 <template>
-  <div
-    class="mt-6 bg-[#FFFFFF] -mx-6 md:mx-0 md:min-h-[426px] rounded-md px-6 py-6 border border-black"
-  >
+  <div class="bg-[#FFFFFF] -mx-6 md:mx-0 md:min-h-[426px] rounded-md px-6 py-6 border border-black">
     <div class="flex items-center gap-2">
       <img
         alt="avatar"
@@ -53,21 +51,21 @@
     >
       <li>
         <button class="flex items-center gap-2 justify-center h-[32px] py-2 px-4 w-full">
-          <HeartIcon />
+          <!-- <HeartIcon /> -->
           <p>Thích</p>
         </button>
       </li>
 
       <li>
         <button class="flex items-center gap-2 justify-center h-[32px] w-full">
-          <CommentIcon />
+          <!-- <CommentIcon /> -->
           <p>Bình luận</p>
         </button>
       </li>
 
       <li>
         <button class="flex items-center gap-2 justify-center h-[32px] w-full">
-          <CommentIcon />
+          <!-- <CommentIcon /> -->
           <p>Share</p>
         </button>
       </li>

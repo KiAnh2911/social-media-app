@@ -1,9 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
-const isAuth = localStorage.getItem('isAuth')
-console.log('isAuth', isAuth)
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -50,7 +47,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const publicPages = ['/login', '/register']
   const authRequired = !publicPages.includes(to.path)
-  console.log('authRequired', authRequired)
+
+  const isAuth = localStorage.getItem('isAuth') === 'true'
+
+  if (isAuth && publicPages.includes(to.path)) {
+    return next({ name: 'Home' })
+  }
 
   if (authRequired && !isAuth) {
     return next({ name: 'Login' })
