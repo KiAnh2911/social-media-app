@@ -1,11 +1,20 @@
 <script setup>
 import PostItem from '@/components/PostItem.vue'
 import CardFollow from '@/components/CardFollow.vue'
+import CreatePost from '@/components/CreatePost.vue'
+import api from '@/domain/api-services'
+import { onMounted } from 'vue'
+
+onMounted(async () => {
+  const data = await api.getAllPost()
+  console.log('data', data)
+})
 </script>
 
 <template>
   <div class="flex gap-10 p-5 w-[1120px] mx-auto">
     <div class="flex flex-col flex-1 gap-5 px-20">
+      <CreatePost />
       <div v-for="n in 10" :key="n">
         <PostItem />
       </div>

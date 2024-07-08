@@ -2,7 +2,8 @@
 import validateEmail from '@/utils/validate-email'
 import { reactive } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-// import authService from '@/services/auth-services'
+import authService from '@/domain/auth-services'
+import { message } from 'ant-design-vue'
 
 const obj = reactive({
   email: '',
@@ -30,22 +31,31 @@ const handleSignIn = () => {
   if (!obj.password) {
     obj.validation.password = 'Password is required.'
     isValid = false
-  } else if (obj.password.length < 6) {
-    obj.validation.password = 'You need to enter 6 characters or more'
+  } else if (obj.password.length < 4) {
+    obj.validation.password = 'You need to enter 4 characters or more'
     isValid = false
   } else {
     obj.validation.password = null
   }
 
   if (isValid) {
-    try {
-      // authService.login(obj.email, obj.password)
-      console.log('data', obj.email, obj.password)
-      localStorage.setItem('isAuth', true)
-    } catch (error) {
-      console.log('error', error)
-    }
-    router.push({ name: 'Home' })
+    authService
+      .login(obj.email, obj.password)
+      .then((res) => res.data)
+      .then((data) => {
+        if (data) {
+          localStorage.setItem('token', data.token)
+          localStorage.setItem('user', JSON.stringify(data.user))
+          localStorage.setItem('isAuth', true)
+        }
+        router.push({ name: 'Home' })
+      })
+      .catch((err) => {
+        console.log()
+        if (err.response.data.status === 401) {
+          message.error('User name or password is not correct')
+        }
+      })
   }
 }
 </script>

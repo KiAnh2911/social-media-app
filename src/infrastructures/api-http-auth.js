@@ -10,9 +10,15 @@ const httpAuth = axios.create({
     // 'Access-Control-Allow-Origin': '*',
     // 'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
     // 'Access-Control-Allow-Headers': ''
-    Accept: 'application/json',
-    Authorization: 'Bearer ' + localStorage.getItem('access_token')
+    Accept: 'application/json'
+    // Authorization: 'Bearer ' + localStorage.getItem('token')
   }
+})
+
+httpAuth.interceptors.request.use((config) => {
+  config.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token')
+
+  return config
 })
 
 httpAuth.interceptors.response.use(
@@ -33,7 +39,7 @@ httpAuth.interceptors.response.use(
     if (code === 402) {
       console.log(error.data)
     }
-    return PromiseRejectionEvent.reject(error)
+    return Promise.reject(error)
   }
 )
 

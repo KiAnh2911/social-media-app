@@ -2,7 +2,8 @@
 import validateEmail from '@/utils/validate-email'
 import { reactive } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-// import api from '@/services/api-services'
+import authService from '@/domain/auth-services'
+import { message } from 'ant-design-vue'
 
 const router = useRouter()
 
@@ -100,13 +101,17 @@ const handleSignUp = () => {
       password: obj.password
     }
     // call api
-    try {
-      // api.register(data)
-      console.log(data)
-      router.push({ name: 'Login' })
-    } catch (error) {
-      console.log('error', error)
-    }
+    authService
+      .register(data)
+      .then((res) => res.data)
+      .then(() => {
+        message.info('You have successfully registered')
+        router.push({ name: 'Login' })
+      })
+      .catch((err) => {
+        console.log(err)
+        message.error(err.response.data)
+      })
   }
 }
 </script>
@@ -243,8 +248,8 @@ const handleSignUp = () => {
               <label for="gender">Gender</label>
               <select id="gender" v-model="obj.gender" class="flex-1 p-2">
                 <option value="" disabled>Chọn giới tính</option>
-                <option value="male">Nam</option>
-                <option value="female">Nữ</option>
+                <option value="Male">Nam</option>
+                <option value="Female">Nữ</option>
               </select>
             </div>
             <span v-if="obj.validation.gender" class="text-red-500">{{
