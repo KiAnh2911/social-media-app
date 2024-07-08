@@ -34,7 +34,8 @@ console.log('userPost', userPost)
         </div>
       </div>
     </div>
-    <div class="flex flex-col gap-5">
+    <h2 class="mb-4 text-xl text-center uppercase">Posts</h2>
+    <div class="grid grid-cols-2 gap-3">
       <div v-for="n in 10" :key="n">
         <PostItem />
       </div>

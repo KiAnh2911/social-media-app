@@ -1,101 +1,56 @@
 <script setup>
-import MessageDetail from '../components/MessageDetail.vue'
 import MessageCard from '../components/MessageCard.vue'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const messages = ref([
   {
-    id: '1',
-    username: 'UI Gradient | Learn UI/UX Design',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
+    roomMessageId: 3,
+    roomMessageName: 'Phong chat 3',
+    sender: {
+      id: 3,
+      firstName: 'Nguyen Van',
+      lastName: 'B'
+    },
+    lastMessageContent: 'hello nhom chat 1',
+    createdAt: '2024-07-04T03:29:47.000+00:00'
   },
   {
-    id: '2',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design 2',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
+    roomMessageId: 1,
+    roomMessageName: 'phong chat 1',
+    sender: {
+      id: 3,
+      firstName: 'Nguyen Van',
+      lastName: 'A'
+    },
+    lastMessageContent: 'hello nhom chat 1',
+    createdAt: '2024-07-04T03:29:47.000+00:00'
   },
   {
-    id: '3',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design 3',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
-  },
-  {
-    id: '4',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
-  },
-  {
-    id: '5',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
-  },
-  {
-    id: '6',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
-  },
-  {
-    id: '11',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
-  },
-  {
-    id: '21',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design 2',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
-  },
-  {
-    id: '31',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design 3',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
-  },
-  {
-    id: '41',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
-  },
-  {
-    id: '51',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
-  },
-  {
-    id: '61',
-    url: 'https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    username: 'UI Gradient | Learn UI/UX Design',
-    content: 'You: fdereererewrfdereererewr',
-    timestamp: '16m'
+    roomMessageId: 4,
+    roomMessageName: 'nhom chat 4',
+    sender: {
+      id: 3,
+      firstName: 'Nguyen Van',
+      lastName: 'Banh'
+    },
+    lastMessageContent: 'hello nhom chat4',
+    createdAt: '2024-07-04T03:22:38.000+00:00'
   }
 ])
 
 const router = useRouter()
+const route = useRoute()
 
 const showMessageDetail = (message) => {
-  router.push({ name: 'MessageDetail', params: { id: message.id } })
+  router.push({ name: 'MessageDetail', params: { id: message.roomMessageId } })
 }
+
+onMounted(() => {
+  if (!route.params.id && messages.value.length > 0) {
+    showMessageDetail(messages.value[0])
+  }
+})
 </script>
 
 <template>
@@ -109,7 +64,7 @@ const showMessageDetail = (message) => {
         <div
           class="flex flex-col"
           v-for="message in messages"
-          :key="message.id"
+          :key="message.roomMessageId"
           @click="showMessageDetail(message)"
         >
           <MessageCard :message="message" />
@@ -117,7 +72,7 @@ const showMessageDetail = (message) => {
       </div>
     </div>
     <div class="flex-1">
-      <MessageDetail />
+      <router-view />
     </div>
   </div>
 </template>

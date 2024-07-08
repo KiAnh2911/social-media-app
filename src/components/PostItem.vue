@@ -9,11 +9,10 @@
         class="object-cover w-12 h-12 rounded-full"
       />
       <div class="">
-        <h3 class="text-[14px] dark:text-[#74CF5A]">User 1</h3>
         <div class="flex gap-2 items-center text-[14px]">
-          <span class="dark:text-textSecondaryDark">8 giờ trước</span>
+          <h3 class="text-xl">User 1</h3>
           <span class="dark:text-linkDark">·</span>
-          <span class="dark:text-linkDark">Category</span>
+          <span class="dark:text-textSecondaryDark">8h</span>
         </div>
       </div>
     </div>

@@ -1,10 +1,10 @@
 <script setup>
-import HeaderApp from './components/HeaderApp.vue'
+import Navbar from './components/NavBar.vue'
 </script>
 
 <template>
   <div class="flex justify-between">
-    <HeaderApp />
+    <Navbar />
     <div class="w-[calc(100%_-_250px)] ml-[250px]">
       <RouterView />
     </div>

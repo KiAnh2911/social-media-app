@@ -13,6 +13,15 @@ export default {
     return httpAuth.get(config.baseApiUrl + `/post/${id}`)
   },
   getAllMessage() {
-    return httpAuth.get(config.baseApiUrl + 'message')
+    return httpAuth.get(config.baseApiUrl + '/message')
+  },
+  addParticipant(data) {
+    return httpAuth.post(config.baseApiUrl + '/message/room/participant', data)
+  },
+  getAllParticipant(roomId) {
+    return httpAuth.get(config.baseApiUrl + `/message/room/${roomId}/participant`)
+  },
+  getMessageNearest() {
+    return httpAuth.get(config.baseApiUrl + '/message/inbox')
   }
 }

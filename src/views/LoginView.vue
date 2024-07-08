@@ -41,6 +41,7 @@ const handleSignIn = () => {
     try {
       // authService.login(obj.email, obj.password)
       console.log('data', obj.email, obj.password)
+      localStorage.setItem('isAuth', true)
     } catch (error) {
       console.log('error', error)
     }

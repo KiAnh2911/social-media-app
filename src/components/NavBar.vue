@@ -23,7 +23,10 @@
         </li>
       </ul>
     </nav>
-    <div class="flex items-center gap-5 px-3 py-2 rounded-md cursor-pointer hover:bg-slate-200">
+    <div
+      class="flex items-center gap-5 px-3 py-2 rounded-md cursor-pointer hover:bg-slate-200"
+      @click="handleLogout"
+    >
       <!-- <CreateIcon /> -->
       <span>Logout</span>
     </div>
@@ -37,6 +40,7 @@ import HomeIcon from './icons/HomeIcon.vue'
 import MessageIcon from './icons/MessageIcon.vue'
 import ProfileIcon from './icons/ProfileIcon.vue'
 import CreateIcon from './icons/CreateIcon.vue'
+import authServices from '@/domain/auth-services'
 
 const urls = ref([
   {
@@ -47,4 +51,12 @@ const urls = ref([
   { label: 'Message', value: 'Message', icon: markRaw(MessageIcon) },
   { label: 'Profile', value: 'Profile', icon: markRaw(ProfileIcon) }
 ])
+
+const handleLogout = async () => {
+  try {
+    await authServices.logout()
+  } catch (error) {
+    console.log('error', error)
+  }
+}
 </script>
