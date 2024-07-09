@@ -15,12 +15,6 @@
             <span class="text-sm font-semibold" active-class="font-semibold">{{ url.value }}</span>
           </router-link>
         </li>
-        <li>
-          <div class="flex items-center gap-5 px-3 py-2 rounded-md hover:bg-slate-200">
-            <CreateIcon />
-            <span>Create</span>
-          </div>
-        </li>
       </ul>
     </nav>
     <div
@@ -39,7 +33,6 @@ import logo from '../assets/icons/logo.svg'
 import HomeIcon from './icons/HomeIcon.vue'
 import MessageIcon from './icons/MessageIcon.vue'
 import ProfileIcon from './icons/ProfileIcon.vue'
-import CreateIcon from './icons/CreateIcon.vue'
 import authServices from '@/domain/auth-services'
 
 const urls = ref([

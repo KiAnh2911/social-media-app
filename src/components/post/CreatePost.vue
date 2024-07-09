@@ -3,6 +3,7 @@ import { Modal } from 'ant-design-vue'
 import { ref } from 'vue'
 
 const showModalCreatePost = ref(false)
+const user = JSON.parse(localStorage.getItem('user'))
 
 const showCreatePost = () => {
   showModalCreatePost.value = !showModalCreatePost.value
@@ -17,13 +18,13 @@ const handleOk = () => {}
       <div class="avatar-channel-wraper">
         <span class="w-12 h-12 text-xl rounded-full" style="background-color: rgb(6, 146, 85)"
           ><img
-            src="https://cache.giaohangtietkiem.vn/d/390e481d413dd6c06b97f9430e5f6dbe.jpg?width=58"
+            :src="user.profile_pic_url"
             alt="avatar-post"
             class="object-cover w-full h-full rounded-full"
         /></span>
       </div>
       <div class="gnews-create-post-info__text" @click="showCreatePost">
-        Văn Anh ơi, bạn đang suy nghĩ gì thế?
+        {{ user.lastName }} ơi, bạn đang suy nghĩ gì thế?
       </div>
     </div>
     <!-- <div class="create-post-menu">

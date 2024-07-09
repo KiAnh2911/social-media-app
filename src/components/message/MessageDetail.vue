@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
-import InfoIcon from './icons/InfoIcon.vue'
-import CardChat from './CardChat.vue'
+import InfoIcon from '../icons/InfoIcon.vue'
+import CardChat from '../CardChat.vue'
 
 const messageList = [
   {

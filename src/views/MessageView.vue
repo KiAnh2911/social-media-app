@@ -1,5 +1,5 @@
 <script setup>
-import MessageCard from '../components/MessageCard.vue'
+import MessageCard from '../components/message/MessageCard.vue'
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 

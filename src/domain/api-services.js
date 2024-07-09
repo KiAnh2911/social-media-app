@@ -6,6 +6,9 @@ export default {
     console.log(httpAuth)
     return httpAuth.get(config.baseApiUrl + '/jwt')
   },
+  getProfile(id) {
+    return httpAuth.get(config.baseApiUrl + `/user/${id}`)
+  },
   getAllPost() {
     return httpAuth.get(config.baseApiUrl + '/posts')
   },

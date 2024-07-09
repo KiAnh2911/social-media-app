@@ -17,7 +17,7 @@ const router = createRouter({
         {
           path: '/message/:id',
           name: 'MessageDetail',
-          component: () => import('../components/MessageDetail.vue')
+          component: () => import('../components/message/MessageDetail.vue')
         }
       ]
     },

@@ -1,7 +1,7 @@
 <script setup>
-import PostItem from '@/components/PostItem.vue'
+import PostItem from '@/components/post/PostItem.vue'
 import CardFollow from '@/components/CardFollow.vue'
-import CreatePost from '@/components/CreatePost.vue'
+import CreatePost from '@/components/post/CreatePost.vue'
 import api from '@/domain/api-services'
 import { onMounted } from 'vue'
 
