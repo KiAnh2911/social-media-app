@@ -33,6 +33,7 @@ import logo from '../assets/icons/logo.svg'
 import HomeIcon from './icons/HomeIcon.vue'
 import MessageIcon from './icons/MessageIcon.vue'
 import ProfileIcon from './icons/ProfileIcon.vue'
+import NotificationIcon from './icons/NotificationIcon.vue'
 import authServices from '@/domain/auth-services'
 
 const urls = ref([
@@ -42,7 +43,8 @@ const urls = ref([
     icon: markRaw(HomeIcon)
   },
   { label: 'Message', value: 'Message', icon: markRaw(MessageIcon) },
-  { label: 'Profile', value: 'Profile', icon: markRaw(ProfileIcon) }
+  { label: 'Profile', value: 'Profile', icon: markRaw(ProfileIcon) },
+  { label: 'Notification', value: 'Notification', icon: markRaw(NotificationIcon) }
 ])
 
 const handleLogout = async () => {

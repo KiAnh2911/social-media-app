@@ -6,7 +6,7 @@ import api from '@/domain/api-services'
 import { onMounted } from 'vue'
 
 onMounted(async () => {
-  const data = await api.getAllPost()
+  const data = await api.jwtToken()
   console.log('data', data)
 })
 </script>

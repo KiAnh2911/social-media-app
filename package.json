@@ -6,6 +6,7 @@
     "pinia": "^2.1.7",
     "socket.io-client": "^4.7.5",
     "vue": "^3.4.29",
+    "vue-contenteditable": "^4.1.0",
     "vue-router": "^4.3.3"
   },
   "devDependencies": {

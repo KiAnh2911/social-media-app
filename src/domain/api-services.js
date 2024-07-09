@@ -9,8 +9,21 @@ export default {
   getProfile(id) {
     return httpAuth.get(config.baseApiUrl + `/user/${id}`)
   },
+  editProfile(data) {
+    return httpAuth.put(config.baseApiUrl + '/user', data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+  },
   getAllPost() {
     return httpAuth.get(config.baseApiUrl + '/posts')
+  },
+  createPost(data) {
+    return httpAuth.post(config.baseApiUrl + '/post', data, {
+      headers: {
+        // 'Content-Type': 'multipart/form-data',
+        Accept: 'application/json'
+      }
+    })
   },
   getPostById(id) {
     return httpAuth.get(config.baseApiUrl + `/post/${id}`)
