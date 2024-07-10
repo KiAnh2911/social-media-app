@@ -1,8 +1,13 @@
 <script setup>
+import apiServices from '@/domain/api-services'
 import { Modal } from 'ant-design-vue'
 import { ref } from 'vue'
 
+defineProps(['post'])
+
 const openModalComment = ref(false)
+const { id } = JSON.parse(localStorage.getItem('user'))
+console.log('id', id)
 
 const showComment = () => {
   openModalComment.value = !openModalComment.value
@@ -10,9 +15,15 @@ const showComment = () => {
 
 const handleOk = () => {}
 
-// const editorConfig = {
-//   toolbar: [['Bold']]
-// }
+const handleLikePost = async (postId, userId) => {
+  console.log('first')
+  try {
+    const res = await apiServices.addLikePost({ postId, userId })
+    console.log('res', res)
+  } catch (error) {
+    console.log('error', error)
+  }
+}
 </script>
 
 <template>
@@ -21,16 +32,19 @@ const handleOk = () => {}
       <div class="item-post-author">
         <div class="item-post-author__avatar">
           <div class="avatar-channel-wraper">
-            <span class="w-12 h-12 text-xl rounded-full" style="background-color: rgb(6, 146, 85)"
-              ><img
-                src="https://cache.giaohangtietkiem.vn/d/1bddc740cd00e8d8c7a5cbcd1b61b168.png?width=58"
-                alt="avatar-channel"
+            <div class="w-12 h-12 text-xl rounded-full" style="background-color: rgb(6, 146, 85)">
+              <img
+                :src="post?.postUser?.profile_pic_url"
+                alt="avatar-user"
                 class="object-cover w-full h-full rounded-full"
-            /></span>
+              />
+            </div>
           </div>
         </div>
         <div class="item-post-author__name">
-          <div class="mb-1 text-sm font-medium">GHTK Pika</div>
+          <div class="mb-1 text-sm font-medium">
+            {{ post?.postUser?.firstName + ' ' + post?.postUser?.lastName }}
+          </div>
           <div class="text-xs text-[#7a7a7a]">Hôm nay, 10:32</div>
         </div>
       </div>
@@ -45,35 +59,13 @@ const handleOk = () => {}
       </div>
     </div>
     <!-- content -->
-    <div>
-      <div class="post-news--category">GÓC LEAK TINNN</div>
-      <div class="post-news-tags"></div>
-      <div class="item-post-content item-post-news-content">
-        <div class="text-wrapper" style="max-height: 152px; overflow: hidden">
-          <div style="overflow-wrap: break-word">
-            <p>
-              <strong>🔥 Một cuộc đua phục vụ Brand sắp diễn ra!</strong><br />
-              💪 Nhằm ghi nhận sự nỗ lực và đóng góp của các thành viên trong việc phục vụ Brand tốt
-              hơn mỗi ngày! <br />
-              <br />
-              <strong>🔥 Anh em cùng chờ đón tại bản app mới nhất!</strong>
-            </p>
-          </div>
-        </div>
+    <div class="px-5">
+      <div class="mb-5 content">
+        {{ post.content }}
       </div>
-      <div class="post-media">
-        <div
-          class="attachment-new-list attachment-new-list--single"
-          style="grid-template-areas: 'attachmentFirst'"
-        >
-          <div class="attachment-new-item attachment-new-item-1">
-            <div class="attachment-new-item-wrapper">
-              <img
-                src="https://cache.giaohangtietkiem.vn/d/12aefd6995ed97cb733ba75d7bb7c8c9.jpg"
-                alt=""
-              />
-            </div>
-          </div>
+      <div v-if="post.post_imgs" class="">
+        <div v-for="img in post?.post_imgs" :key="img" class="">
+          <img :src="img" alt="" class="w-full" />
         </div>
       </div>
     </div>
@@ -102,33 +94,38 @@ const handleOk = () => {}
                 </div>
                 <div class="new-reaction-item new-reaction-item__count">
                   <span class="new-reaction-item__content"
-                    ><div class="new-reaction-item__content--count">21</div></span
+                    ><div class="new-reaction-item__content--count">{{ post?.likeDTOs }}</div></span
                   >
                 </div>
               </div>
             </div>
           </div>
-          <div class="post-params un-visible">0 bình luận</div>
+          <div class="post-params un-visible">{{ post?.commentDTOS }} bình luận</div>
+          <div class="post-params un-visible">{{ post?.shareDTOS }} share</div>
         </div>
         <div class="dynamic-news__action">
-          <button type="button" class="dynamic-action-item dynamic-action-item--like">
-            <span style="margin-right: 8px">
-              <svg
-                viewBox="64 64 896 896"
-                focusable="false"
-                data-icon="heart"
-                width="1em"
-                height="1em"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  d="M923 283.6a260.04 260.04 0 00-56.9-82.8 264.4 264.4 0 00-84-55.5A265.34 265.34 0 00679.7 125c-49.3 0-97.4 13.5-139.2 39-10 6.1-19.5 12.8-28.5 20.1-9-7.3-18.5-14-28.5-20.1-41.8-25.5-89.9-39-139.2-39-35.5 0-69.9 6.8-102.4 20.3-31.4 13-59.7 31.7-84 55.5a258.44 258.44 0 00-56.9 82.8c-13.9 32.3-21 66.6-21 101.9 0 33.3 6.8 68 20.3 103.3 11.3 29.5 27.5 60.1 48.2 91 32.8 48.9 77.9 99.9 133.9 151.6 92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3 56-51.7 101.1-102.7 133.9-151.6 20.7-30.9 37-61.5 48.2-91 13.5-35.3 20.3-70 20.3-103.3.1-35.3-7-69.6-20.9-101.9zM512 814.8S156 586.7 156 385.5C156 283.6 240.3 201 344.3 201c73.1 0 136.5 40.8 167.7 100.4C543.2 241.8 606.6 201 679.7 201c104 0 188.3 82.6 188.3 184.5 0 201.2-356 429.3-356 429.3z"
-                ></path>
-              </svg>
-            </span>
+          <div
+            class="dynamic-action-item dynamic-action-item--like"
+            @click="() => handleLikePost(post?.id, id)"
+          >
+            <span
+              style="
+                width: 20px;
+                height: 20px;
+                display: inline-block;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center center;
+                margin-right: 8px;
+              "
+              :style="
+                post.listLikes.some((item) => item.userId === Number(id))
+                  ? 'background-image: url(/public/images/reactions_love.png)'
+                  : 'background-image: url(/public/images/quick_reaction.png)'
+              "
+            ></span>
             <span>Yêu thích</span>
-          </button>
+          </div>
           <button type="button" class="dynamic-action-item" @click="showComment">
             <span style="margin-right: 8px">
               <svg
@@ -175,16 +172,19 @@ const handleOk = () => {}
         <div class="item-post-author">
           <div class="item-post-author__avatar">
             <div class="avatar-channel-wraper">
-              <span class="w-12 h-12 text-xl rounded-full" style="background-color: rgb(6, 146, 85)"
-                ><img
-                  src="https://cache.giaohangtietkiem.vn/d/1bddc740cd00e8d8c7a5cbcd1b61b168.png?width=58"
-                  alt="avatar-channel"
+              <div class="w-12 h-12 text-xl rounded-full" style="background-color: rgb(6, 146, 85)">
+                <img
+                  :src="post?.postUser?.profile_pic_url"
+                  alt="avatar-user"
                   class="object-cover w-full h-full rounded-full"
-              /></span>
+                />
+              </div>
             </div>
           </div>
           <div class="item-post-author__name">
-            <div class="mb-1 text-sm font-medium">GHTK Pika</div>
+            <div class="mb-1 text-sm font-medium">
+              {{ post?.postUser?.firstName + ' ' + post?.postUser?.lastName }}
+            </div>
             <div class="text-xs text-[#7a7a7a]">Hôm nay, 10:32</div>
           </div>
         </div>
@@ -199,35 +199,13 @@ const handleOk = () => {}
         </div>
       </div>
       <!-- content -->
-      <div>
-        <div class="post-news--category">GÓC LEAK TINNN</div>
-        <div class="post-news-tags"></div>
-        <div class="item-post-content item-post-news-content">
-          <div class="text-wrapper" style="max-height: 152px; overflow: hidden">
-            <div style="overflow-wrap: break-word">
-              <p>
-                <strong>🔥 Một cuộc đua phục vụ Brand sắp diễn ra!</strong><br />
-                💪 Nhằm ghi nhận sự nỗ lực và đóng góp của các thành viên trong việc phục vụ Brand
-                tốt hơn mỗi ngày! <br />
-                <br />
-                <strong>🔥 Anh em cùng chờ đón tại bản app mới nhất!</strong>
-              </p>
-            </div>
-          </div>
+      <div class="px-5">
+        <div class="mb-5 content">
+          {{ post.content }}
         </div>
-        <div class="post-media">
-          <div
-            class="attachment-new-list attachment-new-list--single"
-            style="grid-template-areas: 'attachmentFirst'"
-          >
-            <div class="attachment-new-item attachment-new-item-1">
-              <div class="attachment-new-item-wrapper">
-                <img
-                  src="https://cache.giaohangtietkiem.vn/d/12aefd6995ed97cb733ba75d7bb7c8c9.jpg"
-                  alt=""
-                />
-              </div>
-            </div>
+        <div v-if="post.post_imgs" class="">
+          <div v-for="img in post?.post_imgs" :key="img" class="">
+            <img :src="img" alt="" class="w-full" />
           </div>
         </div>
       </div>
@@ -256,16 +234,22 @@ const handleOk = () => {}
                   </div>
                   <div class="new-reaction-item new-reaction-item__count">
                     <span class="new-reaction-item__content"
-                      ><div class="new-reaction-item__content--count">21</div></span
+                      ><div class="new-reaction-item__content--count">
+                        {{ post?.likeDTOs }}
+                      </div></span
                     >
                   </div>
                 </div>
               </div>
             </div>
-            <div class="post-params un-visible">0 bình luận</div>
+            <div class="post-params un-visible">{{ post?.commentDTOS }} bình luận</div>
+            <div class="post-params un-visible">{{ post?.shareDTOS }} share</div>
           </div>
           <div class="dynamic-news__action">
-            <button type="button" class="dynamic-action-item dynamic-action-item--like">
+            <div
+              class="dynamic-action-item dynamic-action-item--like"
+              @click="() => handleLikePost(post?.id, id)"
+            >
               <span style="margin-right: 8px">
                 <svg
                   viewBox="64 64 896 896"
@@ -282,8 +266,8 @@ const handleOk = () => {}
                 </svg>
               </span>
               <span>Yêu thích</span>
-            </button>
-            <button type="button" class="dynamic-action-item" @click="showComment" disabled>
+            </div>
+            <button type="button" class="dynamic-action-item">
               <span style="margin-right: 8px">
                 <svg
                   viewBox="64 64 896 896"

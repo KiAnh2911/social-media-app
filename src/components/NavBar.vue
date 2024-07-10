@@ -1,3 +1,33 @@
+<script setup>
+import { markRaw, ref } from 'vue'
+import logo from '../assets/icons/logo.svg'
+import HomeIcon from './icons/HomeIcon.vue'
+import MessageIcon from './icons/MessageIcon.vue'
+import ProfileIcon from './icons/ProfileIcon.vue'
+import NotificationIcon from './icons/NotificationIcon.vue'
+import authServices from '@/domain/auth-services'
+
+const { id } = JSON.parse(localStorage.getItem('user'))
+
+const urls = ref([
+  {
+    label: 'Home',
+    value: 'Home',
+    icon: markRaw(HomeIcon)
+  },
+  { label: 'Message', value: 'Message', icon: markRaw(MessageIcon) },
+  { label: 'Notification', value: 'Notification', icon: markRaw(NotificationIcon) }
+])
+
+const handleLogout = async () => {
+  try {
+    await authServices.logout()
+  } catch (error) {
+    console.log('error', error)
+  }
+}
+</script>
+
 <template>
   <div class="fixed h-screen w-[250px] p-3 border-r flex flex-col gap-5">
     <nav class="flex flex-col flex-1 gap-5">
@@ -15,6 +45,16 @@
             <span class="text-sm font-semibold" active-class="font-semibold">{{ url.value }}</span>
           </router-link>
         </li>
+        <li>
+          <router-link
+            :to="`/profile/${id}`"
+            class="flex items-center gap-5 px-3 py-2 rounded-md hover:bg-slate-200"
+            active-class="font-semibold bg-slate-200"
+          >
+            <ProfileIcon />
+            <span class="text-sm font-semibold" active-class="font-semibold">Profile</span>
+          </router-link>
+        </li>
       </ul>
     </nav>
     <div
@@ -26,32 +66,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { markRaw, ref } from 'vue'
-import logo from '../assets/icons/logo.svg'
-import HomeIcon from './icons/HomeIcon.vue'
-import MessageIcon from './icons/MessageIcon.vue'
-import ProfileIcon from './icons/ProfileIcon.vue'
-import NotificationIcon from './icons/NotificationIcon.vue'
-import authServices from '@/domain/auth-services'
-
-const urls = ref([
-  {
-    label: 'Home',
-    value: 'Home',
-    icon: markRaw(HomeIcon)
-  },
-  { label: 'Message', value: 'Message', icon: markRaw(MessageIcon) },
-  { label: 'Profile', value: 'Profile', icon: markRaw(ProfileIcon) },
-  { label: 'Notification', value: 'Notification', icon: markRaw(NotificationIcon) }
-])
-
-const handleLogout = async () => {
-  try {
-    await authServices.logout()
-  } catch (error) {
-    console.log('error', error)
-  }
-}
-</script>

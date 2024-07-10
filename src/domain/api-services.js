@@ -6,28 +6,42 @@ export default {
     console.log(httpAuth)
     return httpAuth.get(config.baseApiUrl + '/jwt')
   },
+  // Profile
   getProfile(id) {
     return httpAuth.get(config.baseApiUrl + `/user/${id}`)
   },
   editProfile(data) {
-    return httpAuth.put(config.baseApiUrl + '/user', data, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    return httpAuth.put(config.baseApiUrl + '/user', data)
   },
+  getFollower(id) {
+    return httpAuth.get(config.baseApiUrl + `/follow/follower/${id}`)
+  },
+  getFollowing(id) {
+    return httpAuth.get(config.baseApiUrl + `/follow/following/${id}`)
+  },
+  addFollow(id) {
+    return httpAuth.post(config.baseApiUrl + `/follow/${id}`)
+  },
+
+  // Post
   getAllPost() {
     return httpAuth.get(config.baseApiUrl + '/posts')
   },
   createPost(data) {
+    console.log('data', data)
     return httpAuth.post(config.baseApiUrl + '/post', data, {
       headers: {
-        // 'Content-Type': 'multipart/form-data',
-        Accept: 'application/json'
+        'Content-Type': 'multipart/form-data'
       }
     })
   },
   getPostById(id) {
-    return httpAuth.get(config.baseApiUrl + `/post/${id}`)
+    return httpAuth.get(config.baseApiUrl + `/posts/${id}`)
   },
+  addLikePost(data) {
+    return httpAuth.post(config.baseApiUrl + `/post/like`, data)
+  },
+  // Message
   getAllMessage() {
     return httpAuth.get(config.baseApiUrl + '/message')
   },

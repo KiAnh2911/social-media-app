@@ -1,0 +1,60 @@
+<template>
+  <svg
+    aria-label="Followers"
+    class="x1lliihq x1n2onr6 x5n08af"
+    fill="currentColor"
+    height="96"
+    role="img"
+    viewBox="0 0 96 96"
+    width="96"
+  >
+    <title>Followers</title>
+    <circle
+      cx="48"
+      cy="48"
+      fill="none"
+      r="47"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+    ></circle>
+    <path
+      d="M64.996 37.999a10 10 0 1 1-10-10.001 10 10 0 0 1 10 10Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-miterlimit="10"
+      stroke-width="2"
+    ></path>
+    <path
+      d="M71.998 65.999v-1.622A10.375 10.375 0 0 0 61.622 54h-13.25a10.374 10.374 0 0 0-10.375 10.376v1.622"
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+    ></path>
+    <line
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-miterlimit="10"
+      stroke-width="2"
+      x1="27.998"
+      x2="27.998"
+      y1="39.003"
+      y2="54.995"
+    ></line>
+    <line
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-miterlimit="10"
+      stroke-width="2"
+      x1="36.001"
+      x2="20"
+      y1="46.996"
+      y2="46.996"
+    ></line>
+  </svg>
+</template>

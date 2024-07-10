@@ -1,6 +1,7 @@
 <script setup>
 import apiServices from '@/domain/api-services'
-import { Modal } from 'ant-design-vue'
+import { fileToBase64 } from '@/utils/convertFileBase64'
+import { message, Modal } from 'ant-design-vue'
 import { ref, watch } from 'vue'
 
 const showModalCreatePost = ref(false)
@@ -23,14 +24,24 @@ const handleOnchange = (e) => {
 }
 
 const handleOk = async () => {
-  const data = {
-    userId: user.id,
-    content: content.value,
-    file: imagePost.value
+  try {
+    const fileList = await Promise.all(
+      imagePost.value.map(async (image) => await fileToBase64(image))
+    )
+    console.log('fileList', fileList)
+    const data = {
+      userId: user.id,
+      content: content.value
+      // file: fileList
+    }
+    const response = await apiServices.createPost(data)
+    console.log('response', response)
+    message.success('You create post successfully')
+  } catch (error) {
+    console.log('error', error)
+  } finally {
+    showModalCreatePost.value = !showModalCreatePost.value
   }
-  console.log('data', data.file)
-  const response = await apiServices.createPost(data)
-  console.log('response', response)
 }
 
 watch(content, (newVal) => {
@@ -60,7 +71,7 @@ watch(content, (newVal) => {
       </div>
     </div>
   </div>
-  <Modal v-model:open="showModalCreatePost" title="Create post" @ok="handleOk">
+  <Modal v-model:open="showModalCreatePost" title="Create post" @ok="handleOk" footer>
     <div class="flex items-center gap-5 mb-5">
       <div class="w-12 h-12 text-xl rounded-full" style="background-color: rgb(6, 146, 85)">
         <img
@@ -278,6 +289,15 @@ watch(content, (newVal) => {
         <div>Màu nền</div>
       </div>
     </div>
+    <div class="modal-create-new__footer" :class="content === '' ? 'disabled' : ''">
+      <button
+        type="button"
+        class="modal-create-new__footer--btn"
+        :class="content === '' ? 'cursor-not-allowed ' : ''"
+      >
+        <span>Đăng bài viết</span>
+      </button>
+    </div>
   </Modal>
 </template>
 
@@ -427,5 +447,25 @@ watch(content, (newVal) => {
   border-right: 1px solid hsla(0, 0%, 47.8%, 0.25882352941176473);
   padding-right: 5px;
   margin-right: 5px;
+}
+.modal-create-new__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #00904a;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+.modal-create-new__footer.disabled {
+  background: #aeaeae;
+  cursor: not-allowed;
+}
+.modal-create-new__footer--btn {
+  flex: 1 1;
+  color: #fff;
+  border-radius: 5px;
+  height: 48px;
+  line-height: 1;
+  font-size: 20px;
 }
 </style>
