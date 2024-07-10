@@ -5,32 +5,39 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'Home',
-      component: HomeView
-    },
-    {
-      path: '/message',
-      name: 'Message',
-      component: () => import('../views/MessageView.vue'),
+      path: '',
+      name: 'root',
+      component: () => import('../components/LayoutRoot.vue'),
       children: [
         {
-          path: '/message/:id',
-          name: 'MessageDetail',
-          component: () => import('../components/message/MessageDetail.vue')
+          path: '/',
+          name: 'Home',
+          component: HomeView
+        },
+        {
+          path: '/message',
+          name: 'Message',
+          component: () => import('../views/MessageView.vue'),
+          children: [
+            {
+              path: '/message/:id',
+              name: 'MessageDetail',
+              component: () => import('../components/message/MessageDetail.vue')
+            }
+          ]
+        },
+
+        {
+          path: '/profile/:id',
+          name: 'ProfileId',
+          component: () => import('../views/ProfileView.vue')
+        },
+        {
+          path: '/notification',
+          name: 'Notification',
+          component: () => import('../views/NotificationView.vue')
         }
       ]
-    },
-
-    {
-      path: '/profile/:id',
-      name: 'ProfileId',
-      component: () => import('../views/ProfileView.vue')
-    },
-    {
-      path: '/notification',
-      name: 'Notification',
-      component: () => import('../views/NotificationView.vue')
     },
     {
       path: '/login',

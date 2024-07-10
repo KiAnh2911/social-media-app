@@ -41,6 +41,9 @@ export default {
   addLikePost(data) {
     return httpAuth.post(config.baseApiUrl + `/post/like`, data)
   },
+  removeLikePost(likeId) {
+    return httpAuth.delete(config.baseApiUrl + `/like/${likeId}`)
+  },
   // Message
   getAllMessage() {
     return httpAuth.get(config.baseApiUrl + '/message')

@@ -1,13 +1,13 @@
 <script setup>
 import apiServices from '@/domain/api-services'
 import { Modal } from 'ant-design-vue'
+import moment from 'moment'
 import { ref } from 'vue'
 
 defineProps(['post'])
 
 const openModalComment = ref(false)
 const { id } = JSON.parse(localStorage.getItem('user'))
-console.log('id', id)
 
 const showComment = () => {
   openModalComment.value = !openModalComment.value
@@ -16,13 +16,20 @@ const showComment = () => {
 const handleOk = () => {}
 
 const handleLikePost = async (postId, userId) => {
-  console.log('first')
   try {
-    const res = await apiServices.addLikePost({ postId, userId })
-    console.log('res', res)
+    await apiServices.addLikePost({ postId, userId })
   } catch (error) {
     console.log('error', error)
   }
+}
+
+const handleUnLikePost = async (postId) => {
+  console.log('postId', postId)
+  // try {
+  //   await apiServices.removeLikePost(postId)
+  // } catch (error) {
+  //   console.log('error', error)
+  // }
 }
 </script>
 
@@ -45,7 +52,9 @@ const handleLikePost = async (postId, userId) => {
           <div class="mb-1 text-sm font-medium">
             {{ post?.postUser?.firstName + ' ' + post?.postUser?.lastName }}
           </div>
-          <div class="text-xs text-[#7a7a7a]">Hôm nay, 10:32</div>
+          <div class="text-xs text-[#7a7a7a]">
+            {{ moment(post?.createdAt).format('DD-MM-YYYY - HH:mm') }}
+          </div>
         </div>
       </div>
       <div class="post-news-action">
@@ -106,22 +115,38 @@ const handleLikePost = async (postId, userId) => {
         <div class="dynamic-news__action">
           <div
             class="dynamic-action-item dynamic-action-item--like"
-            @click="() => handleLikePost(post?.id, id)"
+            @click="() => handleUnLikePost(post?.listLikes.map((like) => like.id))"
+            v-if="post.listLikes.some((item) => item.userId === Number(id))"
           >
             <span
               style="
                 width: 20px;
                 height: 20px;
                 display: inline-block;
+                background-image: url('/public/images/reactions_love.png');
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: center center;
                 margin-right: 8px;
               "
-              :style="
-                post.listLikes.some((item) => item.userId === Number(id))
-                  ? 'background-image: url(/public/images/reactions_love.png)'
-                  : 'background-image: url(/public/images/quick_reaction.png)'
+            ></span>
+            <span>Yêu thích</span>
+          </div>
+          <div
+            class="dynamic-action-item dynamic-action-item--like"
+            @click="() => handleLikePost(post?.id, id)"
+            v-else
+          >
+            <span
+              style="
+                width: 20px;
+                height: 20px;
+                display: inline-block;
+                background-image: url('/public/images/quick_reaction.png');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center center;
+                margin-right: 8px;
               "
             ></span>
             <span>Yêu thích</span>
