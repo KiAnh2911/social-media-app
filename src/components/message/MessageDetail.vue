@@ -48,8 +48,6 @@ function scrollToBotom() {
   nextTick(() => {
     let scroll = document.getElementById('contentMsg')
     scroll.scrollTop = scroll.scrollHeight
-
-    console.log('scroll', scroll.scrollTop, scroll.scrollHeight)
   })
 }
 

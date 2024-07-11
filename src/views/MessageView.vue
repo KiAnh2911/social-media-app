@@ -34,7 +34,6 @@ onMounted(async () => {
     isLoading.value = true
     const { data } = await api.getMessageNearest()
     listRoomMessageInfo.value = data
-    console.log(listRoomMessageInfo.value)
   } catch (error) {
     isLoading.value = true
     message.error(error.message)

@@ -18,11 +18,8 @@ const userPost = ref([])
 const route = useRoute()
 const router = useRouter()
 
-// const image = ref({})
-// const originalUserProfile = ref({})
 const id = route.params.id
 const { id: userId } = JSON.parse(localStorage.getItem('user'))
-console.log('userPost', userPost.value)
 
 // const handleOnchangeImage = (e) => {
 //   let files = e.target.files
@@ -112,7 +109,6 @@ onMounted(async () => {
     isLoading.value = false
   }
 })
-console.log('profileUser', profileUser.value)
 </script>
 
 <template>

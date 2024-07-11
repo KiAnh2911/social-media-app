@@ -8,7 +8,6 @@ const listNotification = ref([])
 onMounted(async () => {
   try {
     const { data } = await apiServices.getAllNotification()
-    console.log('data', data)
     listNotification.value = data
   } catch (error) {
     console.log('error', error)
