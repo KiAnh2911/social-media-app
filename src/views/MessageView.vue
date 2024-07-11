@@ -20,9 +20,10 @@ const showMessageDetail = (message) => {
   router.push({ name: 'MessageDetail', params: { id: message.roomMessageId } })
 }
 
+const roomMessageIds = [1];
+
 let stompClient = null;
 let connected = false;
-    
 
 watch(
   listRoomMessageInfo,
@@ -36,39 +37,52 @@ const handleModalCreateGroup = () => {
   modalCreateGroupRef.value.show()
 }
 
-function subscribeToRoom() {
-  const chatRoom = "someChatRoom"; // Replace this with your logic
-  stompClient.subscribe(`/room/${chatRoom}`, message => {
-    messageStore.addMessage(JSON.parse(message.body));
+function subscribeToRoom(stompClient, roomMessageId){
+  stompClient.subscribe(`/room/${roomMessageId}`, message => {
+    console.log('message' , message);
+   // messageStore.addMessage(roomMessageId, JSON.parse(message.body));
   });
-  console.log('Subscribed to room: ');
 }
 
-onBeforeMount(() => {
+const connect = () => {
   const socket = new SockJS('http://localhost:8080/ws');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, frame => {
-      console.log('Connected: ' + frame);
-      connected = true; // Ensure connected is set to true
+  const stompClient = Stomp.over(socket);
+  stompClient.connect({}, frame => {
+    console.log('Connected: ' + frame);
+    roomMessageIds.forEach(roomMessageId => {
+      subscribeToRoom(stompClient, roomMessageId);
     });
+  });
+};
 
-})
-
-onMounted(async () => {
-  try {
-    isLoading.value = true
-    const { data } = await api.getMessageNearest();
-    await subscribeToRoom();
-    listRoomMessageInfo.value = data
-  } catch (error) {
-    isLoading.value = true
-    message.error(error.message)
-  } finally {
-    isLoading.value = false
-  }
-})
-
-function redirectRoom(room) {
+onBeforeMount(() => {
+  // const socket = new SockJS('http://localhost:8080/ws');
+  //   stompClient = Stomp.over(socket);
+  //   stompClient.connect({}, frame => {
+    //     console.log('Connected: ' + frame);
+    //     connected = true; // Ensure connected is set to true
+    //   });
+    
+    connect();
+    
+  })
+  
+  onMounted(async () => {
+    try {
+      isLoading.value = true
+      const { data } = await api.getMessageNearest();
+      listRoomMessageInfo.value = data
+      await subscribeToRoom();
+    } catch (error) {
+      isLoading.value = true
+      message.error(error.message)
+    } finally {
+      isLoading.value = false
+    }
+  })
+  console.log(listRoomMessageInfo)
+  
+  function redirectRoom(room) {
   const roomId = room[0].roomMessageId
 
   router.push({ name: 'MessageDetail', params: { id: roomId } })

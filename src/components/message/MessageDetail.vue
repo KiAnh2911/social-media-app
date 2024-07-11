@@ -1,17 +1,16 @@
 <script setup>
-import { reactive, ref, onMounted, nextTick } from 'vue'
+import { reactive, ref, onMounted, nextTick, computed } from 'vue'
 import InfoIcon from '../icons/InfoIcon.vue'
 import CardChat from '../CardChat.vue'
 import api from '@/domain/api-services'
-import { useRoute } from 'vue-router'
 import apiServices from '@/domain/api-services'
+import { useRoute } from 'vue-router'
+import { useMessageStore } from '@/stores/message-store'
 
 const isLoading = ref(false)
-const messageList = ref([])
-
+//const messageList = ref([])
 const route = useRoute()
-
-const id = Number(route.params.id)
+const roomMessageId = Number(route.params.id)
 const user = JSON.parse(localStorage.getItem('user'))
 
 const showInfo = ref(false)
@@ -19,20 +18,23 @@ const showInfo = ref(false)
 const message = reactive({
   messageContent: ''
 })
+const messageStore = useMessageStore();
+const messageList = computed(() => messageStore.getMessagesByRoom(roomMessageId));
+
 
 const addMessage = async () => {
   console.log(message)
   try {
     const data = {
       messageContent: message.messageContent,
-      roomMessageId: id,
+      roomMessageId: roomMessageId,
       senderId: user.id
     }
     const response = await apiServices.addMessage(data)
     console.log('response', response)
 
     if (response.data) {
-      fetchMessages(id)
+      messageStore.fetchMessages(roomMessageId)
       message.messageContent = ''
     }
   } catch (error) {
@@ -51,23 +53,24 @@ function scrollToBotom() {
   })
 }
 
-const fetchMessages = async (id) => {
-  try {
-    isLoading.value = true
-    const { data } = await api.getAllMessage(id)
-    nextTick(scrollToBotom)
-    messageList.value = data
-  } catch (error) {
-    console.error(error)
-    message.error = error.response
-  } finally {
-    isLoading.value = false
-  }
-}
+// const fetchMessages = async (id) => {
+//   try {
+//     isLoading.value = true
+//     const { data } = await api.getAllMessage(id)
+//     nextTick(scrollToBotom)
+//     messageList.value = data
+//   } catch (error) {
+//     console.error(error)
+//     message.error = error.response
+//   } finally {
+//     isLoading.value = false
+//   }
+// }
 
 onMounted(() => {
-  // scrollToBotom()
-  fetchMessages(id)
+  nextTick(scrollToBotom)
+  // fetchMessages(id)
+  messageStore.fetchMessages(roomMessageId);
 })
 
 const handleMessageSelected = (messageId) => {
