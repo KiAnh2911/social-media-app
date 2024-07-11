@@ -1,10 +1,13 @@
 <script setup>
 import MessageCard from '../components/message/MessageCard.vue'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/domain/api-services'
 import { message } from 'ant-design-vue'
 import ModalCreateGroup from '@/components/modal/ModalCreateGroup.vue'
+import SockJS from 'sockjs-client'
+import Stomp from 'stompjs';
+import { useMessageStore } from '@/stores/message-store';
 // import { socket } from '@/socket'
 
 const isLoading = ref(false)
@@ -12,10 +15,14 @@ const listRoomMessageInfo = ref([])
 const modalCreateGroupRef = ref()
 const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user'))
-
+const messageStore  = useMessageStore()
 const showMessageDetail = (message) => {
   router.push({ name: 'MessageDetail', params: { id: message.roomMessageId } })
 }
+
+let stompClient = null;
+let connected = false;
+    
 
 watch(
   listRoomMessageInfo,
@@ -29,10 +36,29 @@ const handleModalCreateGroup = () => {
   modalCreateGroupRef.value.show()
 }
 
+function subscribeToRoom() {
+  const chatRoom = "someChatRoom"; // Replace this with your logic
+  stompClient.subscribe(`/room/${chatRoom}`, message => {
+    messageStore.addMessage(JSON.parse(message.body));
+  });
+  console.log('Subscribed to room: ');
+}
+
+onBeforeMount(() => {
+  const socket = new SockJS('http://localhost:8080/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, frame => {
+      console.log('Connected: ' + frame);
+      connected = true; // Ensure connected is set to true
+    });
+
+})
+
 onMounted(async () => {
   try {
     isLoading.value = true
-    const { data } = await api.getMessageNearest()
+    const { data } = await api.getMessageNearest();
+    await subscribeToRoom();
     listRoomMessageInfo.value = data
   } catch (error) {
     isLoading.value = true
