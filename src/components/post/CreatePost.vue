@@ -24,6 +24,7 @@ const handleOnchange = (e) => {
 }
 
 const handleOk = async () => {
+  console.log('aksjshd')
   try {
     const fileList = await Promise.all(
       imagePost.value.map(async (image) => await fileToBase64(image))
@@ -41,6 +42,9 @@ const handleOk = async () => {
     console.log('error', error)
   } finally {
     showModalCreatePost.value = !showModalCreatePost.value
+    showAddImage.value = false
+    content.value = ''
+    imagePost.value = []
   }
 }
 
@@ -294,6 +298,7 @@ watch(content, (newVal) => {
         type="button"
         class="modal-create-new__footer--btn"
         :class="content === '' ? 'cursor-not-allowed ' : ''"
+        @click="handleOk"
       >
         <span>Đăng bài viết</span>
       </button>

@@ -39,20 +39,22 @@ const handleLogout = async () => {
           <router-link
             :to="{ name: `${url.value}` }"
             class="flex items-center gap-5 px-3 py-2 rounded-md hover:bg-slate-200"
-            active-class="font-semibold bg-slate-200"
+            exact-active-class="font-semibold bg-slate-200"
           >
             <component :is="url.icon" />
-            <span class="text-sm font-semibold" active-class="font-semibold">{{ url.value }}</span>
+            <span class="text-sm font-semibold" exact-active-class="font-semibold">{{
+              url.value
+            }}</span>
           </router-link>
         </li>
         <li>
           <router-link
             :to="`/profile/${id}`"
             class="flex items-center gap-5 px-3 py-2 rounded-md hover:bg-slate-200"
-            active-class="font-semibold bg-slate-200"
+            exact-active-class="font-semibold bg-slate-200"
           >
             <ProfileIcon />
-            <span class="text-sm font-semibold" active-class="font-semibold">Profile</span>
+            <span class="text-sm font-semibold" exact-active-class="font-semibold">Profile</span>
           </router-link>
         </li>
       </ul>

@@ -6,7 +6,11 @@ export default {
     console.log(httpAuth)
     return httpAuth.get(config.baseApiUrl + '/jwt')
   },
-  // Profile
+  // USER
+  getAllUser() {
+    return httpAuth.get(config.baseApiUrl + '')
+  },
+  // PROFILE
   getProfile(id) {
     return httpAuth.get(config.baseApiUrl + `/user/${id}`)
   },
@@ -23,17 +27,13 @@ export default {
     return httpAuth.post(config.baseApiUrl + `/follow/${id}`)
   },
 
-  // Post
+  // POST
   getAllPost() {
     return httpAuth.get(config.baseApiUrl + '/posts')
   },
   createPost(data) {
     console.log('data', data)
-    return httpAuth.post(config.baseApiUrl + '/post', data, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+    return httpAuth.post(config.baseApiUrl + '/post', data)
   },
   getPostById(id) {
     return httpAuth.get(config.baseApiUrl + `/posts/${id}`)
@@ -44,17 +44,26 @@ export default {
   removeLikePost(likeId) {
     return httpAuth.delete(config.baseApiUrl + `/like/${likeId}`)
   },
-  // Message
-  getAllMessage() {
-    return httpAuth.get(config.baseApiUrl + '/message')
-  },
-  addParticipant(data) {
-    return httpAuth.post(config.baseApiUrl + '/message/room/participant', data)
+
+  // MESSAGE
+  getAllMessage(id) {
+    return httpAuth.get(config.baseApiUrl + `/message/room/${id}/messages`)
   },
   getAllParticipant(roomId) {
     return httpAuth.get(config.baseApiUrl + `/message/room/${roomId}/participant`)
   },
   getMessageNearest() {
-    return httpAuth.get(config.baseApiUrl + '/message/inbox')
+    return httpAuth.get(config.baseApiUrl + '/message/recent')
+  },
+  addParticipant(data) {
+    return httpAuth.post(config.baseApiUrl + '/message/room/participant', data)
+  },
+  addMessage(data) {
+    return httpAuth.post(config.baseApiUrl + '/message', data)
+  },
+
+  //  NOTIFICATION
+  getAllNotification() {
+    return httpAuth.get(config.baseApiUrl + '/notification')
   }
 }

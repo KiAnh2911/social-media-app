@@ -2,19 +2,25 @@
 import { formatDate } from '@/utils/format-date'
 import { RouterLink } from 'vue-router'
 
-defineProps(['message'])
+const { message } = defineProps(['message'])
+const emit = defineEmits(['messageSelected'])
+
+const handleClick = () => {
+  emit('messageSelected', message.roomMessageId)
+}
 </script>
 
 <template>
   <RouterLink
     class="flex items-center gap-3 px-3 py-2 rounded-lg"
-    active-class="bg-gray-100"
+    exact-active-class="bg-gray-100"
+    @click="handleClick"
     :to="{ name: 'MessageDetail', params: { id: message.roomMessageId } }"
   >
     <div class="relative">
       <div class="w-14 h-14">
         <img
-          src="https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+          :src="message?.sender?.profile_pic_url"
           alt="avatar"
           class="object-cover w-full h-full rounded-full"
         />

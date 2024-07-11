@@ -1,17 +1,21 @@
 <script setup>
+import moment from 'moment'
+
 const { message } = defineProps(['message'])
+
+const user = JSON.parse(localStorage.getItem('user'))
 </script>
 
 <template>
   <div
     class="flex gap-3 container_message"
-    :class="message.sender.username === 'anhhv71' ? 'container_message__me' : ''"
+    :class="message.sender.username === user.username ? 'container_message__me' : ''"
   >
-    <div class="message-avatar" v-if="message.sender.username !== 'anhhv71'">
+    <div class="message-avatar" v-if="message.sender.username !== user.username">
       <div>
         <div class="w-8 h-8">
           <img
-            :src="message.sender.avatar"
+            :src="message.sender.profile_pic_url"
             alt="avatar"
             class="object-cover w-full h-full rounded-full"
           />
@@ -20,10 +24,10 @@ const { message } = defineProps(['message'])
     </div>
     <div class="group_message">
       <h3 class="mb-1 text-xs">
-        {{ message.sender.username === 'anhhv71' ? '' : message.sender.fullname }}
+        {{ message.sender.username === user.username ? '' : message.sender.firstName }}
       </h3>
       <div id="1258356804494835712">
-        <div class="group_message__item">
+        <div class="gap-3 group_message__item">
           <div class="message__content">
             <div
               class="message__text"
@@ -31,9 +35,8 @@ const { message } = defineProps(['message'])
                 message.sender.username === 'anhhv71' ? 'color: #fff ; background: #069255;' : ''
               "
             >
-              {{ message.text }}
+              {{ message.content }}
             </div>
-
             <div class="message__reaction">
               <div class="quick-reaction quick-reaction--show">
                 <div class="quick-reaction-item">
@@ -58,6 +61,10 @@ const { message } = defineProps(['message'])
               </div>
             </div>
           </div>
+          <div class="mt-3">
+            {{ moment(message.createdAt).format('HH:mm') }}
+          </div>
+
           <div class="message__more_action">
             <div class="ic-more ic-more--reaction">
               <svg width="22" height="22" viewBox="0 0 33 33" fill="none" class="popFilSosStyle">

@@ -1,10 +1,10 @@
 <script setup>
-const props = defineProps('notification')
-console.log('props', props)
-const unactice = false
+import moment from 'moment'
+
+defineProps(['notification'])
 </script>
 <template>
-  <div class="item-channel-noti" :class="unactice ? '' : 'item-channel-unread'">
+  <div class="item-channel-noti" :class="notification?.read ? '' : 'item-channel-unread'">
     <div class="item_infor">
       <div class="item_avatar">
         <div class="avatar-channel-wraper">
@@ -12,12 +12,12 @@ const unactice = false
             class="object-cover w-12 h-12 rounded-full"
             style="background-color: rgb(6, 146, 85)"
             ><img
-              src="https://cache.giaohangtietkiem.vn/d/b02b4c89125f45d59995a5b6721b5d35.jpg?width=58"
-              alt="avatar-channel"
+              :src="notification?.sender?.profile_pic_url"
+              :alt="notification?.sender?.profile_pic_url"
               class="object-cover w-full h-full rounded-full"
           /></span>
         </div>
-        <div class="icon_noti" :class="unactice ? 'unactice' : ''">
+        <div class="icon_noti" :class="notification?.read ? 'unactice' : ''">
           <div class="item_icon">
             <svg viewBox="0 0 24 24" fill="white" width="13px" height="13px">
               <path d="M0 0h24v24H0z" fill="none"></path>
@@ -30,28 +30,13 @@ const unactice = false
       </div>
       <div class="item_content">
         <div class="item_detail">
-          <div class="item_detail_notify">
-            <span
-              >Ghtkthongbao đã nhắc đến tất cả trong tin nhắn:
-              <i
-                ><span
-                  class="extract-text__mention"
-                  data-is-show-profile="false"
-                  data-type="user"
-                  data-id="all"
-                  >@Tất cả</span
-                >
-                Nhanh chân nào bạn ơi! Lớp học
-                <strong>CD4G.145 - Chuyên đề Các nền tảng làm việc nội bộ tại GHTK</strong> sẽ bắt
-                đầu vào lúc <strong>09/07/2024, 18:00</strong><br />
-                😍Chuẩn bị truy cập <strong>"Chi tiết lớp"</strong> để điểm danh và thu thập những
-                kiến thức bổ ích nào.</i
-              ></span
-            >
-          </div>
+          {{ notification?.content }}
         </div>
-        <div class="item_time"><span>2024-07-09 17:45</span><span>Đào tạo | CD4G.145</span></div>
-        <div :class="unactice ? '' : 'item_unread'"></div>
+        <div class="item_time">
+          <span>{{ moment(notification?.createdAt).format('DD-MM-YYYY HH:mm') }}</span
+          ><span>{{ notification?.entityType }}</span>
+        </div>
+        <div :class="notification?.read ? '' : 'item_unread'"></div>
       </div>
     </div>
   </div>

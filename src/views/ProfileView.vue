@@ -70,8 +70,22 @@ const handleShowModalProfile = () => {
 // }
 
 const handleFollow = () => {
-  const { data } = apiServices.addFollow(id)
-  console.log('data', data)
+  try {
+    const { data } = apiServices.addFollow(id)
+    console.log('data', data)
+    if (data) {
+      message.success('You follow successfully')
+    }
+  } catch (error) {
+    if (error) {
+      message.error('Ban da follow')
+    }
+  }
+}
+const handleUnFollow = () => {
+  console.log('handleUnFollow')
+  // const { data } = apiServices.addFollow(id)
+  // console.log('data', data)
 }
 
 // const handleMessage = () => {
@@ -121,8 +135,16 @@ console.log('profileUser', profileUser.value)
             <button
               class="px-3 py-1 text-sm font-medium text-black bg-gray-300 rounded-md"
               @click="handleFollow"
+              v-if="!profileUser?.follow"
             >
               Follow
+            </button>
+            <button
+              class="px-3 py-1 text-sm font-medium text-black bg-gray-300 rounded-md"
+              @click="handleUnFollow"
+              v-esle
+            >
+              Following
             </button>
             <button
               class="px-3 py-1 text-sm font-medium text-black bg-gray-300 rounded-md"
