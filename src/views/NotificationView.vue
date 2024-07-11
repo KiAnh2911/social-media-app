@@ -21,7 +21,7 @@ console.log('listNotification', listNotification.value)
 <template>
   <div class="max-w-[560px] mx-auto p-14">
     <h2 class="mb-10 text-2xl font-medium">Thông báo</h2>
-    <div v-for="notification in listNotification" :key="notification.id">
+    <div v-for="notification in listNotification.reverse()" :key="notification.id">
       <CardNotification :notification="notification" />
     </div>
   </div>

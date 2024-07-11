@@ -22,15 +22,15 @@ const handleLikePost = async (postId, userId) => {
     console.log('error', error)
   }
 }
+// BE chua lam unLikePost
 
-const handleUnLikePost = async (postId) => {
-  console.log('postId', postId)
-  // try {
-  //   await apiServices.removeLikePost(postId)
-  // } catch (error) {
-  //   console.log('error', error)
-  // }
-}
+// const handleUnLikePost = async (postId) => {
+//   try {
+//     await apiServices.removeLikePost(postId)
+//   } catch (error) {
+//     console.log('error', error)
+//   }
+// }
 </script>
 
 <template>

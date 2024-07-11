@@ -5,18 +5,18 @@ import { message, Skeleton } from 'ant-design-vue'
 import ModalFollower from '@/components/modal/ModalFollower.vue'
 import ModalFollowing from '@/components/modal/ModalFollowing.vue'
 import ModalEditProfile from '@/components/modal/ModalEditProfile.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import PostItem from '@/components/post/PostItem.vue'
 import PostIcon from '@/components/icons/PostIcon.vue'
 
 const isLoading = ref(false)
-// const showModalProfile = ref(false)
 const modalEditProfileRef = ref()
 const modalFollowerRef = ref()
 const modalFollowingRef = ref()
 const profileUser = ref()
 const userPost = ref([])
 const route = useRoute()
+const router = useRouter()
 
 // const image = ref({})
 // const originalUserProfile = ref({})
@@ -69,12 +69,13 @@ const handleShowModalProfile = () => {
 //   showModalProfile.value = false
 // }
 
-const handleFollow = () => {
+const handleFollow = async () => {
   try {
-    const { data } = apiServices.addFollow(id)
+    const { data } = await apiServices.addFollow(id)
     console.log('data', data)
     if (data) {
       message.success('You follow successfully')
+      router.go(0)
     }
   } catch (error) {
     if (error) {
@@ -82,10 +83,16 @@ const handleFollow = () => {
     }
   }
 }
-const handleUnFollow = () => {
-  console.log('handleUnFollow')
-  // const { data } = apiServices.addFollow(id)
-  // console.log('data', data)
+const handleUnFollow = async () => {
+  try {
+    const { data } = await apiServices.unFollow(id)
+    if (data) {
+      message.success('you unfollow successfully')
+      router.go(0)
+    }
+  } catch (error) {
+    console.log('error', error)
+  }
 }
 
 // const handleMessage = () => {
@@ -131,23 +138,31 @@ console.log('profileUser', profileUser.value)
           >
             Edit profile
           </button>
-          <div v-else class="flex items-center gap-3">
+
+          <div v-else-if="profileUser?.follow">
+            <button
+              class="px-3 py-1 text-sm font-medium text-black bg-gray-300 rounded-md"
+              @click="() => handleUnFollow(profileUser?.userInfo.id)"
+            >
+              Following
+            </button>
+
+            <button
+              class="px-3 py-1 ml-5 text-sm font-medium text-black bg-gray-300 rounded-md"
+              @click="handleMessage"
+            >
+              Message
+            </button>
+          </div>
+          <div v-else>
             <button
               class="px-3 py-1 text-sm font-medium text-black bg-gray-300 rounded-md"
               @click="handleFollow"
-              v-if="!profileUser?.follow"
             >
               Follow
             </button>
             <button
-              class="px-3 py-1 text-sm font-medium text-black bg-gray-300 rounded-md"
-              @click="handleUnFollow"
-              v-esle
-            >
-              Following
-            </button>
-            <button
-              class="px-3 py-1 text-sm font-medium text-black bg-gray-300 rounded-md"
+              class="px-3 py-1 ml-5 text-sm font-medium text-black bg-gray-300 rounded-md"
               @click="handleMessage"
             >
               Message

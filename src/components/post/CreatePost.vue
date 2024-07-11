@@ -3,13 +3,14 @@ import apiServices from '@/domain/api-services'
 import { fileToBase64 } from '@/utils/convertFileBase64'
 import { message, Modal } from 'ant-design-vue'
 import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const showModalCreatePost = ref(false)
 const showAddImage = ref(false)
 const user = JSON.parse(localStorage.getItem('user'))
-
 const content = ref('')
 const imagePost = ref([])
+const router = useRouter()
 
 const showCreatePost = () => {
   showModalCreatePost.value = !showModalCreatePost.value
@@ -36,8 +37,11 @@ const handleOk = async () => {
       // file: fileList
     }
     const response = await apiServices.createPost(data)
-    console.log('response', response)
-    message.success('You create post successfully')
+
+    if (response.data) {
+      message.success('You create post successfully')
+      router.go(0)
+    }
   } catch (error) {
     console.log('error', error)
   } finally {

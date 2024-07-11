@@ -8,7 +8,7 @@ export default {
   },
   // USER
   getAllUser() {
-    return httpAuth.get(config.baseApiUrl + '')
+    return httpAuth.get(config.baseApiUrl + '/follow/recommend')
   },
   // PROFILE
   getProfile(id) {
@@ -25,6 +25,9 @@ export default {
   },
   addFollow(id) {
     return httpAuth.post(config.baseApiUrl + `/follow/${id}`)
+  },
+  unFollow(id) {
+    return httpAuth.delete(config.baseApiUrl + `/follow/${id}`)
   },
 
   // POST
