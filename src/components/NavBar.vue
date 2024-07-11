@@ -1,6 +1,6 @@
 <script setup>
 import { markRaw, ref } from 'vue'
-import logo from '../assets/icons/logo.svg'
+const logo = 'https://cache.giaohangtietkiem.vn/d/be7392d4a2f308c90e0213fce54d91c8.jpg'
 import HomeIcon from './icons/HomeIcon.vue'
 import MessageIcon from './icons/MessageIcon.vue'
 import ProfileIcon from './icons/ProfileIcon.vue'
@@ -32,7 +32,7 @@ const handleLogout = async () => {
   <div class="fixed h-screen w-[250px] p-3 border-r flex flex-col gap-5">
     <nav class="flex flex-col flex-1 gap-5">
       <div class="flex justify-center my-10">
-        <img :src="logo" alt="logo" class="object-cover h-22 w-28" />
+        <img :src="logo" alt="logo" class="object-cover rounded-full h-22 w-28" />
       </div>
       <ul>
         <li v-for="url in urls" :key="url.label">
@@ -42,9 +42,9 @@ const handleLogout = async () => {
             exact-active-class="font-semibold bg-slate-200"
           >
             <component :is="url.icon" />
-            <span class="text-sm font-semibold" exact-active-class="font-semibold">{{
-              url.value
-            }}</span>
+            <span class="text-sm font-semibold" exact-active-class="font-semibold">
+              {{ url.value }}
+            </span>
           </router-link>
         </li>
         <li>
