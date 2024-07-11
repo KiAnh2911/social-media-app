@@ -6,10 +6,13 @@ import api from '@/domain/api-services'
 import { onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import SkeletonPost from '@/components/SkeletonPost.vue'
+import { useNotificationStore } from '@/stores/notification-store'
 
 const listPost = ref([])
 const listUser = ref([])
 const isLoading = ref(false)
+
+const notificationStore = useNotificationStore();
 
 onMounted(async () => {
   try {
@@ -18,6 +21,8 @@ onMounted(async () => {
     listPost.value = data
     const response = await api.getAllUser()
     listUser.value = response.data
+
+    notificationStore.connectWebSocket();
   } catch (error) {
     isLoading.value = true
     message.error(error.response)

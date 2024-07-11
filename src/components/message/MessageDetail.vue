@@ -20,7 +20,19 @@ const message = reactive({
 })
 const messageStore = useMessageStore();
 const messageList = computed(() => messageStore.getMessagesByRoom(roomMessageId));
+console.log(messageList);
 
+
+function sendWebsocketMessage(message) {
+  const destination = `/app/message/${roomMessageId}`;
+
+    const { stompClient } = messageStore; // Access stompClient from the store
+    if (stompClient && stompClient.connected) {
+      stompClient.send(destination, {}, JSON.stringify(message));
+    } else {
+      console.error('stompClient is not connected');
+    }
+}
 
 const addMessage = async () => {
   console.log(message)
@@ -29,14 +41,21 @@ const addMessage = async () => {
       messageContent: message.messageContent,
       roomMessageId: roomMessageId,
       senderId: user.id
+
+      // message: message.messageContent,
+      // receiverName: roomMessageId,
+      // senderName: user.id
     }
     const response = await apiServices.addMessage(data)
     console.log('response', response)
 
-    if (response.data) {
-      messageStore.fetchMessages(roomMessageId)
-      message.messageContent = ''
-    }
+    sendWebsocketMessage(data);
+  
+    // if (response.data) {
+    //   messageStore.fetchMessages(roomMessageId)
+    //   message.messageContent = ''
+    // }
+
   } catch (error) {
     console.log('error', error)
   }

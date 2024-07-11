@@ -22,9 +22,6 @@ const showMessageDetail = (message) => {
 
 const roomMessageIds = [1];
 
-let stompClient = null;
-let connected = false;
-
 watch(
   listRoomMessageInfo,
   (value) => {
@@ -37,16 +34,23 @@ const handleModalCreateGroup = () => {
   modalCreateGroupRef.value.show()
 }
 
-function subscribeToRoom(stompClient, roomMessageId){
-  stompClient.subscribe(`/room/${roomMessageId}`, message => {
-    console.log('message' , message);
-   // messageStore.addMessage(roomMessageId, JSON.parse(message.body));
-  });
-}
+const subscribeToRoom = (stompClient, roomMessageId) => {
+  if (stompClient && stompClient.connected) {
+    stompClient.subscribe(`/room/${roomMessageId}`, message => {
+      console.log('Received message:', message);
+      messageStore.addMessage(roomMessageId, JSON.parse(message.body));
+    }, error => {
+      console.error('Error subscribing to room:', error);
+    });
+  } else {
+    console.error('stompClient is not connected');
+  }
+};
 
 const connect = () => {
-  const socket = new SockJS('http://localhost:8080/ws');
-  const stompClient = Stomp.over(socket);
+  messageStore.connectWebSocket();
+  const { stompClient } = messageStore;
+
   stompClient.connect({}, frame => {
     console.log('Connected: ' + frame);
     roomMessageIds.forEach(roomMessageId => {
@@ -55,14 +59,8 @@ const connect = () => {
   });
 };
 
-onBeforeMount(() => {
-  // const socket = new SockJS('http://localhost:8080/ws');
-  //   stompClient = Stomp.over(socket);
-  //   stompClient.connect({}, frame => {
-    //     console.log('Connected: ' + frame);
-    //     connected = true; // Ensure connected is set to true
-    //   });
-    
+  onBeforeMount(() => {
+
     connect();
     
   })
