@@ -18,7 +18,7 @@ const showMessageDetail = (message) => {
 }
 console.log('listRoomMessageInfo', listRoomMessageInfo.value)
 // listRoomMessageInfo.value.map((room) => room.id)
-const roomMessageIds = ref([])
+const roomMessageIds = ref([1, 5])
 console.log('roomMessageIds', roomMessageIds.value)
 
 watch(
@@ -75,7 +75,7 @@ onMounted(async () => {
     isLoading.value = true
     const { data } = await api.getMessageNearest()
     listRoomMessageInfo.value = data
-    roomMessageIds.value = data.map((room) => room.id)
+   // roomMessageIds.value = data.map((room) => room.id)
     connect()
     subscribeToRoom()
   } catch (error) {
