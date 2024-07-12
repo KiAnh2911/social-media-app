@@ -17,7 +17,6 @@ const showMessageDetail = (message) => {
   router.push({ name: 'MessageDetail', params: { id: message.roomMessageId } })
 }
 console.log('listRoomMessageInfo', listRoomMessageInfo.value)
-// listRoomMessageInfo.value.map((room) => room.id)
 const roomMessageIds = ref([])
 console.log('roomMessageIds', roomMessageIds.value)
 
