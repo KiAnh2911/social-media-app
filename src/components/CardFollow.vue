@@ -30,7 +30,7 @@ const handleRemoveFollower = () => {
 
 const fetchAllUsers = async () => {
   try {
-    const response = await apiServices.getAllUser()
+    const response = await apiServices.getAllUserRecommend()
     emit('updateUsers', response.data)
   } catch (error) {
     console.error('Error fetching users:', error)
@@ -44,7 +44,7 @@ const fetchAllUsers = async () => {
       <RouterLink class="w-12 h-12" to="#">
         <img
           :src="
-            follow.profile_pic_url ? follow.profile_pic_url : 'public/images/avatar-default.png'
+            follow.profile_pic_url ? follow.profile_pic_url : '/public/images/avatar-default.png'
           "
           class="object-cover w-full h-full rounded-full"
         />

@@ -17,8 +17,9 @@ const showMessageDetail = (message) => {
   router.push({ name: 'MessageDetail', params: { id: message.roomMessageId } })
 }
 console.log('listRoomMessageInfo', listRoomMessageInfo.value)
-// listRoomMessageInfo.value.map((room) => room.id)
-const roomMessageIds = ref([1, 5])
+
+const roomMessageIds = ref([])
+
 console.log('roomMessageIds', roomMessageIds.value)
 
 watch(
@@ -75,9 +76,11 @@ onMounted(async () => {
     isLoading.value = true
     const { data } = await api.getMessageNearest()
     listRoomMessageInfo.value = data
-   // roomMessageIds.value = data.map((room) => room.id)
+
+    roomMessageIds.value = data.map((room) => room.roomMessageId)
+
     connect()
-    subscribeToRoom()
+    // subscribeToRoom()
   } catch (error) {
     isLoading.value = true
     message.error(error.message)
