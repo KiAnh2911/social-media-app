@@ -33,7 +33,7 @@ const handleOk = async () => {
     const data = {
       userId: user.id,
       content: content.value,
-      file: fileList
+      fileString: fileList
     }
     const response = await apiServices.createPost(data)
 

@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import config from '@/configs/app.base'
 // import apiServices from '@/domain/api-services'
 
-
+const { id: userId } = JSON.parse(localStorage.getItem('user'))
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
@@ -17,15 +17,16 @@ export const useNotificationStore = defineStore('notification', {
       const socket = new SockJS(config.baseApiUrl + '/ws')
       this.stompClient = Stomp.over(socket)
 
-      this.stompClient.connect({}, frame => {
-        console.log('Connected: ' + frame)
-        this.stompClient.subscribe('/user/' + userId + '/queue/private', message => {
-          console.log(message)
-          alert(message.body)
-        });
-
-      },(error) => {
-
+      this.stompClient.connect(
+        {},
+        (frame) => {
+          console.log('Connected: ' + frame)
+          this.stompClient.subscribe('/user/' + userId + '/queue/private', (message) => {
+            console.log(message)
+            alert(message.body)
+          })
+        },
+        (error) => {
           console.error('Error connecting to WebSocket:', error)
         }
       )
