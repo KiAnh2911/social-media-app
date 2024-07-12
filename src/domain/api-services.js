@@ -7,8 +7,11 @@ export default {
     return httpAuth.get(config.baseApiUrl + '/jwt')
   },
   // USER
-  getAllUser() {
+  getAllUserRecommend() {
     return httpAuth.get(config.baseApiUrl + '/follow/recommend')
+  },
+  getAllUser() {
+    return httpAuth.get(config.baseApiUrl + '/user/all')
   },
   // PROFILE
   getProfile(id) {
@@ -31,15 +34,18 @@ export default {
   },
 
   // POST
+  getAllCommentByPostId(id) {
+    return httpAuth.get(config.baseApiUrl + `/post/${id}/comments`)
+  },
   getAllPost() {
     return httpAuth.get(config.baseApiUrl + '/posts')
+  },
+  getPostById(id) {
+    return httpAuth.get(config.baseApiUrl + `/posts/${id}`)
   },
   createPost(data) {
     console.log('data', data)
     return httpAuth.post(config.baseApiUrl + '/post', data)
-  },
-  getPostById(id) {
-    return httpAuth.get(config.baseApiUrl + `/posts/${id}`)
   },
   addLikePost(data) {
     return httpAuth.post(config.baseApiUrl + `/post/like`, data)
@@ -63,6 +69,9 @@ export default {
   },
   addMessage(data) {
     return httpAuth.post(config.baseApiUrl + '/message', data)
+  },
+  addGroupMessageChat(data) {
+    return httpAuth.post(config.baseApiUrl + '/message/room', data)
   },
 
   //  NOTIFICATION

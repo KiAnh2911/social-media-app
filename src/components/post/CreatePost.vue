@@ -25,7 +25,6 @@ const handleOnchange = (e) => {
 }
 
 const handleOk = async () => {
-  console.log('aksjshd')
   try {
     const fileList = await Promise.all(
       imagePost.value.map(async (image) => await fileToBase64(image))
@@ -33,8 +32,8 @@ const handleOk = async () => {
     console.log('fileList', fileList)
     const data = {
       userId: user.id,
-      content: content.value
-      // file: fileList
+      content: content.value,
+      file: fileList
     }
     const response = await apiServices.createPost(data)
 

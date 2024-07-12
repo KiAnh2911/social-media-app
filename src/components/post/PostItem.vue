@@ -8,9 +8,17 @@ defineProps(['post'])
 
 const openModalComment = ref(false)
 const { id } = JSON.parse(localStorage.getItem('user'))
+const listCommentByPostId = ref([])
 
-const showComment = () => {
-  openModalComment.value = !openModalComment.value
+const showComment = async () => {
+  try {
+    openModalComment.value = !openModalComment.value
+    const { data } = await apiServices.getAllCommentByPostId()
+    listCommentByPostId.value = data
+    console.log('data', data)
+  } catch (error) {
+    console.log('error', error)
+  }
 }
 
 const handleOk = () => {}
@@ -325,7 +333,70 @@ const handleLikePost = async (postId, userId) => {
       </div>
       <!-- add comment and list comment -->
       <div class="item-post-comment">
-        <!-- <ckeditor></ckeditor> -->
+        <div></div>
+        <div class="list-comment">
+          <div class="comment-wrapper-container">
+            <div class="comment-container">
+              <div class="comment-avatar">
+                <div class="avatar-channel-wraper">
+                  <div
+                    class="w-8 h-8 rounded-full avatar-channel"
+                    style="background-color: rgb(6, 146, 85)"
+                  >
+                    <img
+                      src="https://cache.giaohangtietkiem.vn/d/d622e2be6156aec3cbe1f222e5c72764.jpg?width=38"
+                      alt="avatar-channel"
+                      class="object-cover w-full h-full rounded-full"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="comment-content-wrapper">
+                <div class="comment-content">
+                  <div class="comment-content__text">
+                    <div class="text-base font-semibold item-comment__name">
+                      Nguyễn Lê Sĩ Đang
+                      <div class="item-comment__pin"></div>
+                    </div>
+                  </div>
+                  <div class="comment-reactions">
+                    <div class="reaction-news">
+                      <div class="reaction-news-list">
+                        <div class="new-reaction-item">
+                          <span class="new-reaction-item__content">
+                            <span aria-label="" class="emoji-mart-emoji emoji-mart-emoji-custom">
+                              <span
+                                style="
+                                  width: 20px;
+                                  height: 20px;
+                                  display: inline-block;
+                                  background-image: url('');
+                                  background-size: contain;
+                                  background-repeat: no-repeat;
+                                  background-position: center center;
+                                "
+                              >
+                              </span>
+                            </span>
+                          </span>
+                        </div>
+                        <div class="new-reaction-item new-reaction-item__count">
+                          <span class="new-reaction-item__content"
+                            ><div class="new-reaction-item__content--count">3</div></span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-comment__content"><p>a nhân vippro</p></div>
+                  <div class="comment-attachment"></div>
+                </div>
+                <div class="comment-more-action"></div>
+              </div>
+            </div>
+            <div class="sub-comment"></div>
+          </div>
+        </div>
       </div>
     </div>
   </Modal>
@@ -387,5 +458,77 @@ const handleLikePost = async (postId, userId) => {
 }
 .dynamic-news__action .dynamic-action-item:hover {
   background: #ececec;
+}
+/* commnet */
+.comment-container {
+  display: flex;
+  margin: 10px 4px;
+  padding: 0 20px;
+  position: relative;
+}
+.comment-container .comment-avatar {
+  margin-right: 10px;
+}
+.comment-container .comment-content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.comment-container .comment-content-container .comment-content-wrapper {
+  display: flex;
+  margin-right: 100px;
+}
+.comment-container .comment-content {
+  background: #f7f7f7;
+  padding: 4px 12px;
+  border-radius: 10px;
+  min-width: 100px;
+  position: relative;
+  margin-right: 20px;
+}
+.comment-container .comment-more-action {
+  display: flex;
+  align-items: center;
+  visibility: hidden;
+}
+
+.item-comment__name,
+.item-comment__name .item-comment__pin {
+  display: flex;
+  align-items: center;
+}
+.item-comment__content {
+  color: #2b2b2b;
+}
+.comment-container .comment-reactions {
+  color: #01b101;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 1px 1px #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  left: calc(100% - 10px);
+}
+
+.comment-container .comment-reactions .reaction-news {
+  box-shadow: 0 2px 4px 0 #c2c2c2;
+  border-radius: 100vhày giúp check message ở kafka;
+  padding: 1px 2px;
+}
+
+.reaction-news,
+.reaction-news .reaction-news-list {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.comment-container .comment-action {
+  display: flex;
+  cursor: pointer;
+  color: #5e5e5e;
+  margin-top: 10px;
 }
 </style>

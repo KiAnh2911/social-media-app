@@ -12,17 +12,17 @@ const listPost = ref([])
 const listUser = ref([])
 const isLoading = ref(false)
 
-const notificationStore = useNotificationStore();
+const notificationStore = useNotificationStore()
 
 onMounted(async () => {
   try {
     isLoading.value = true
     const { data } = await api.getAllPost()
     listPost.value = data
-    const response = await api.getAllUser()
+    const response = await api.getAllUserRecommend()
     listUser.value = response.data
 
-    notificationStore.connectWebSocket();
+    notificationStore.connectWebSocket()
   } catch (error) {
     isLoading.value = true
     message.error(error.response)
