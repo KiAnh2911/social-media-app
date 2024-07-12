@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import config from '@/configs/app.base'
 // import apiServices from '@/domain/api-services'
 
-const { id: userId } = JSON.parse(localStorage.getItem('user'))
+const { id: userId } = JSON.parse(localStorage.getItem('user')) || 1
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({

@@ -20,8 +20,6 @@ console.log('listRoomMessageInfo', listRoomMessageInfo.value)
 
 const roomMessageIds = ref([])
 
-console.log('roomMessageIds', roomMessageIds.value)
-
 watch(
   listRoomMessageInfo,
   (value) => {

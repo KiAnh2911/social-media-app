@@ -37,6 +37,9 @@ export default {
   getAllCommentByPostId(id) {
     return httpAuth.get(config.baseApiUrl + `/post/${id}/comments`)
   },
+  addComment(data) {
+    return httpAuth.post(config.baseApiUrl + '/post/comment', data)
+  },
   getAllPost() {
     return httpAuth.get(config.baseApiUrl + '/posts')
   },

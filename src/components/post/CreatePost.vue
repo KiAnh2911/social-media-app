@@ -29,7 +29,6 @@ const handleOk = async () => {
     const fileList = await Promise.all(
       imagePost.value.map(async (image) => await fileToBase64(image))
     )
-    console.log('fileList', fileList)
     const data = {
       userId: user.id,
       content: content.value,
@@ -101,7 +100,7 @@ watch(content, (newVal) => {
       </div>
       <label for="photo" v-if="showAddImage">
         <div class="create-new-attachment">
-          <div class="create-new-attachment-add" v-if="imagePost">
+          <div class="create-new-attachment-add" v-if="imagePost.length == 0">
             <div class="create-new-attachment-add__icon">
               <svg
                 width="28"
@@ -142,11 +141,8 @@ watch(content, (newVal) => {
             <div class="create-new-attachment-add__sub-title">Hoặc kéo và thả</div>
           </div>
           <div class="flex flex-col gap-3" v-else>
-            <div class="w-full" v-for="n in 2" :key="n">
-              <img
-                src="https://cache.giaohangtietkiem.vn/d/2393fd218529788870aacaf48d9329a9.png?width=500"
-                alt=""
-              />
+            <div class="w-full" v-for="n in imagePost" :key="n">
+              <img :src="imagePost" alt="" />
             </div>
           </div>
           <div class="create-new-attachment-action">

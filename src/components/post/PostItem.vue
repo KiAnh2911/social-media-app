@@ -7,13 +7,14 @@ import { ref } from 'vue'
 defineProps(['post'])
 
 const openModalComment = ref(false)
-const { id } = JSON.parse(localStorage.getItem('user'))
+const { id, profile_pic_url } = JSON.parse(localStorage.getItem('user'))
 const listCommentByPostId = ref([])
+const commentPost = ref('')
 
-const showComment = async () => {
+const showComment = async (id) => {
   try {
     openModalComment.value = !openModalComment.value
-    const { data } = await apiServices.getAllCommentByPostId()
+    const { data } = await apiServices.getAllCommentByPostId(id)
     listCommentByPostId.value = data
     console.log('data', data)
   } catch (error) {
@@ -30,15 +31,18 @@ const handleLikePost = async (postId, userId) => {
     console.log('error', error)
   }
 }
-// BE chua lam unLikePost
-
-// const handleUnLikePost = async (postId) => {
-//   try {
-//     await apiServices.removeLikePost(postId)
-//   } catch (error) {
-//     console.log('error', error)
-//   }
-// }
+const handleAddComment = async (postId) => {
+  try {
+    const data = {
+      postId,
+      content: commentPost.value,
+      userId: id
+    }
+    await apiServices.addComment(data)
+  } catch (error) {
+    console.log('error', error)
+  }
+}
 </script>
 
 <template>
@@ -159,7 +163,7 @@ const handleLikePost = async (postId, userId) => {
             ></span>
             <span>Yêu thích</span>
           </div>
-          <button type="button" class="dynamic-action-item" @click="showComment">
+          <button type="button" class="dynamic-action-item" @click="() => showComment(post?.id)">
             <span style="margin-right: 8px">
               <svg
                 viewBox="64 64 896 896"
@@ -333,8 +337,30 @@ const handleLikePost = async (postId, userId) => {
       </div>
       <!-- add comment and list comment -->
       <div class="item-post-comment">
-        <div></div>
-        <div class="list-comment">
+        <div class="flex items-center gap-5 px-5 mt-5">
+          <div class="w-8 h-8 rounded-full">
+            <img
+              :src="profile_pic_url"
+              alt="avatar"
+              class="object-cover w-full h-full rounded-full"
+            />
+          </div>
+          <div class="relative w-full h-12">
+            <input
+              type="text"
+              class="w-full h-full outline-none bg-[#f3f3f3] p-3 rounded-full"
+              placeholder="Viết bình luận"
+              v-model="commentPost"
+            />
+            <div
+              class="absolute right-0 z-10 flex p-3 text-base font-semibold text-black transition-all -translate-y-1/2 rounded-full cursor-pointer top-1/2 hover:bg-slate-300"
+              @click="() => handleAddComment(post?.id)"
+            >
+              Send
+            </div>
+          </div>
+        </div>
+        <div class="list-comment" v-for="comment in listCommentByPostId" :key="comment.id">
           <div class="comment-wrapper-container">
             <div class="comment-container">
               <div class="comment-avatar">
@@ -344,7 +370,7 @@ const handleLikePost = async (postId, userId) => {
                     style="background-color: rgb(6, 146, 85)"
                   >
                     <img
-                      src="https://cache.giaohangtietkiem.vn/d/d622e2be6156aec3cbe1f222e5c72764.jpg?width=38"
+                      :src="comment?.commentUser?.profile_pic_url"
                       alt="avatar-channel"
                       class="object-cover w-full h-full rounded-full"
                     />
@@ -355,11 +381,11 @@ const handleLikePost = async (postId, userId) => {
                 <div class="comment-content">
                   <div class="comment-content__text">
                     <div class="text-base font-semibold item-comment__name">
-                      Nguyễn Lê Sĩ Đang
+                      {{ comment?.commentUser?.firstName + ' ' + comment?.commentUser?.lastName }}
                       <div class="item-comment__pin"></div>
                     </div>
                   </div>
-                  <div class="comment-reactions">
+                  <div class="comment-reactions" v-if="comment?.likes > 0">
                     <div class="reaction-news">
                       <div class="reaction-news-list">
                         <div class="new-reaction-item">
@@ -382,16 +408,27 @@ const handleLikePost = async (postId, userId) => {
                         </div>
                         <div class="new-reaction-item new-reaction-item__count">
                           <span class="new-reaction-item__content"
-                            ><div class="new-reaction-item__content--count">3</div></span
+                            ><div class="new-reaction-item__content--count">
+                              {{ comment?.likes === 0 ? '' : comment?.likes }}
+                            </div></span
                           >
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="item-comment__content"><p>a nhân vippro</p></div>
+                  <div class="item-comment__content">
+                    <p>{{ comment?.content }}</p>
+                  </div>
                   <div class="comment-attachment"></div>
                 </div>
-                <div class="comment-more-action"></div>
+                <div class="comment-action">
+                  <div class="comment-action__sub">Yêu thích</div>
+                  •
+                  <div class="comment-action__sub">Trả lời</div>
+                  <div class="comment-action__sub comment-action__sub--font">
+                    {{ moment(comment?.createdAt).format('DD-MM-YYYY') }}
+                  </div>
+                </div>
               </div>
             </div>
             <div class="sub-comment"></div>
@@ -530,5 +567,21 @@ const handleLikePost = async (postId, userId) => {
   cursor: pointer;
   color: #5e5e5e;
   margin-top: 10px;
+}
+.comment-container .comment-action {
+  display: flex;
+  cursor: pointer;
+  color: #5e5e5e;
+  margin-top: 10px;
+}
+.comment-container .comment-action .comment-action__sub {
+  margin: 0 8px 0 4px;
+  font-weight: 700;
+  font-size: 12px;
+}
+.comment-container .comment-action .comment-action__sub {
+  margin: 0 8px 0 4px;
+  font-weight: 700;
+  font-size: 12px;
 }
 </style>

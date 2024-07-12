@@ -9,7 +9,7 @@ defineExpose({ show })
 const showModalCreateGroup = ref(false)
 const listUser = ref([])
 const group = ref({
-  roomMeesageName: '',
+  roomMessageName: '',
   participantIds: []
 })
 
