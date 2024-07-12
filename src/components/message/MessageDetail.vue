@@ -1,63 +1,31 @@
+<!-- MessageDetail.vue -->
 <script setup>
-import { reactive, ref, onMounted, nextTick, computed } from 'vue'
+import { reactive, ref, onMounted, nextTick, computed, watch } from 'vue'
 import InfoIcon from '../icons/InfoIcon.vue'
 import CardChat from '../CardChat.vue'
-import api from '@/domain/api-services'
 import apiServices from '@/domain/api-services'
 import { useRoute } from 'vue-router'
 import { useMessageStore } from '@/stores/message-store'
 
-const isLoading = ref(false)
-//const messageList = ref([])
 const route = useRoute()
-const roomMessageId = Number(route.params.id)
 const user = JSON.parse(localStorage.getItem('user'))
 
 const showInfo = ref(false)
-
 const message = reactive({
   messageContent: ''
 })
-const messageStore = useMessageStore();
-const messageList = computed(() => messageStore.getMessagesByRoom(roomMessageId));
-console.log(messageList);
 
+const messageStore = useMessageStore()
+const messageList = computed(() => messageStore.getMessagesByRoom(Number(route.params.id)))
 
-function sendWebsocketMessage(message) {
-  const destination = `/app/message/${roomMessageId}`;
+const sendWebsocketMessage = (message) => {
+  const destination = `/app/message/${Number(route.params.id)}`
 
-    const { stompClient } = messageStore; // Access stompClient from the store
-    if (stompClient && stompClient.connected) {
-      stompClient.send(destination, {}, JSON.stringify(message));
-    } else {
-      console.error('stompClient is not connected');
-    }
-}
-
-const addMessage = async () => {
-  console.log(message)
-  try {
-    const data = {
-      messageContent: message.messageContent,
-      roomMessageId: roomMessageId,
-      senderId: user.id
-
-      // message: message.messageContent,
-      // receiverName: roomMessageId,
-      // senderName: user.id
-    }
-    const response = await apiServices.addMessage(data)
-    console.log('response', response)
-
-    sendWebsocketMessage(data);
-  
-    // if (response.data) {
-    //   messageStore.fetchMessages(roomMessageId)
-    //   message.messageContent = ''
-    // }
-
-  } catch (error) {
-    console.log('error', error)
+  const { stompClient } = messageStore
+  if (stompClient && stompClient.connected) {
+    stompClient.send(destination, {}, JSON.stringify(message))
+  } else {
+    console.error('stompClient is not connected')
   }
 }
 
@@ -65,61 +33,48 @@ const handleShowInfo = () => {
   showInfo.value = !showInfo.value
 }
 
-function scrollToBotom() {
+const scrollToBotom = () => {
   nextTick(() => {
-    let scroll = document.getElementById('contentMsg')
+    const scroll = document.getElementById('contentMsg')
     scroll.scrollTop = scroll.scrollHeight
   })
 }
 
-// const fetchMessages = async (id) => {
-//   try {
-//     isLoading.value = true
-//     const { data } = await api.getAllMessage(id)
-//     nextTick(scrollToBotom)
-//     messageList.value = data
-//   } catch (error) {
-//     console.error(error)
-//     message.error = error.response
-//   } finally {
-//     isLoading.value = false
-//   }
-// }
-
-onMounted(() => {
-  nextTick(scrollToBotom)
-  // fetchMessages(id)
-  messageStore.fetchMessages(roomMessageId);
-})
-
-const handleMessageSelected = (messageId) => {
-  fetchMessages(messageId)
+const addMessageRoom = async () => {
+  try {
+    const data = {
+      messageContent: message.messageContent,
+      roomMessageId: Number(route.params.id),
+      senderId: user.id
+    }
+    await apiServices.addMessage(data)
+    sendWebsocketMessage(data)
+    scrollToBotom()
+  } catch (error) {
+    console.log('error', error)
+  } finally {
+    message.messageContent = ''
+  }
 }
+
+const fetchMessages = async () => {
+  await messageStore.fetchMessages(Number(route.params.id))
+  scrollToBotom()
+}
+
+onMounted(fetchMessages)
+
+watch(() => route.params.id, fetchMessages)
 </script>
 
 <template>
   <div class="flex h-screen">
     <div class="flex flex-col justify-between flex-1 h-full">
-      <header class="flex items-center justify-between h-20 px-5 py-3 border-b">
-        <div class="flex items-center gap-5">
-          <div class="w-14 h-14">
-            <img
-              src="https://images.pexels.com/photos/17858988/pexels-photo-17858988/free-photo-of-woman-in-bra-and-white-clothes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-              alt="avatar"
-              class="object-cover w-full h-full rounded-full"
-            />
-          </div>
-          <h2 class="text-xl font-medium">UI Gradient | Learn UI/UX Design</h2>
-        </div>
+      <header class="flex items-center justify-end h-20 px-5 py-3 border-b">
         <span @click="handleShowInfo" class="cursor-pointer"><InfoIcon /></span>
       </header>
       <div class="flex-1 p-5 overflow-y-auto" id="contentMsg">
-        <CardChat
-          v-for="msg in messageList"
-          :key="msg.id"
-          :message="msg"
-          @messageSelected="handleMessageSelected"
-        />
+        <CardChat v-for="msg in messageList" :key="msg.id" :message="msg" />
       </div>
       <div class="h-12 px-5 mb-5">
         <div class="relative px-4 py-2 border rounded-3xl">
@@ -128,13 +83,12 @@ const handleMessageSelected = (messageId) => {
             placeholder="Message ...."
             class="w-full outline-none"
             v-model="message.messageContent"
-            @keyup.enter="addMessage"
+            @keyup.enter="addMessageRoom"
           />
-
           <button
             class="absolute text-blue-400 -translate-y-1/2 cursor-pointer right-5 top-1/2"
             :class="message.messageContent.length > 0 ? 'block' : 'hidden'"
-            @click="addMessage"
+            @click="addMessageRoom"
           >
             Send
           </button>

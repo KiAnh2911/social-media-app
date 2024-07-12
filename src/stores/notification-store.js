@@ -1,30 +1,35 @@
-import apiServices from '@/domain/api-services';
-import { defineStore } from 'pinia';
-import SockJS from 'sockjs-client';
-
+import SockJS from 'sockjs-client'
+import Stomp from 'stompjs'
+import { defineStore } from 'pinia'
+import config from '@/configs/app.base'
+// import apiServices from '@/domain/api-services'
 
 export const useNotificationStore = defineStore('notification', {
-    state: () => ({
-      notifications: [],
-      stompClient: null,
-    }),
-    actions: {
-        connectWebSocket() {
-            console.log('in websocket');
-            const socket = new SockJS('http://localhost:8080/ws');
-            this.stompClient = Stomp.over(socket);
-            this.stompClient.connect({}, frame => {
-                console.log('Connected: ' + frame);
-            }, error => {
-                console.error('Error connecting to WebSocket:', error);
-            });
+  state: () => ({
+    notifications: [],
+    stompClient: null
+  }),
+  actions: {
+    connectWebSocket() {
+      console.log('in websocket')
+      const socket = new SockJS(config.baseApiUrl + '/ws')
+      this.stompClient = Stomp.over(socket)
+      this.stompClient.connect(
+        {},
+        (frame) => {
+          console.log('Connected: ' + frame)
         },
-
-        addNotification(notification) {
-        this.notifications.push(notification);
-      }
+        (error) => {
+          console.error('Error connecting to WebSocket:', error)
+        }
+      )
     },
-    getters: {
-      getAllNotifications: (state) => state.notifications
+
+    addNotification(notification) {
+      this.notifications.push(notification)
     }
-  });
+  },
+  getters: {
+    getAllNotifications: (state) => state.notifications
+  }
+})

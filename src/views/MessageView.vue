@@ -1,26 +1,25 @@
 <script setup>
 import MessageCard from '../components/message/MessageCard.vue'
-import { ref, onMounted, watch, onBeforeMount } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/domain/api-services'
 import { message } from 'ant-design-vue'
 import ModalCreateGroup from '@/components/modal/ModalCreateGroup.vue'
-import SockJS from 'sockjs-client'
-import Stomp from 'stompjs';
-import { useMessageStore } from '@/stores/message-store';
-// import { socket } from '@/socket'
+import { useMessageStore } from '@/stores/message-store'
 
 const isLoading = ref(false)
 const listRoomMessageInfo = ref([])
 const modalCreateGroupRef = ref()
 const router = useRouter()
 const user = JSON.parse(localStorage.getItem('user'))
-const messageStore  = useMessageStore()
+const messageStore = useMessageStore()
 const showMessageDetail = (message) => {
   router.push({ name: 'MessageDetail', params: { id: message.roomMessageId } })
 }
-
-const roomMessageIds = [1];
+console.log('listRoomMessageInfo', listRoomMessageInfo.value)
+// listRoomMessageInfo.value.map((room) => room.id)
+const roomMessageIds = ref([])
+console.log('roomMessageIds', roomMessageIds.value)
 
 watch(
   listRoomMessageInfo,
@@ -30,61 +29,63 @@ watch(
   { deep: true }
 )
 
+function redirectRoom(room) {
+  const roomId = room[0].roomMessageId
+
+  router.push({ name: 'MessageDetail', params: { id: roomId } })
+}
+
 const handleModalCreateGroup = () => {
   modalCreateGroupRef.value.show()
 }
 
 const subscribeToRoom = (stompClient, roomMessageId) => {
   if (stompClient && stompClient.connected) {
-    stompClient.subscribe(`/room/${roomMessageId}`, message => {
-      console.log('Received message:', message);
-      messageStore.addMessage(roomMessageId, JSON.parse(message.body));
-    }, error => {
-      console.error('Error subscribing to room:', error);
-    });
+    stompClient.subscribe(
+      `/room/${roomMessageId}`,
+      (message) => {
+        console.log('Received message:', message)
+        messageStore.addMessage(roomMessageId, JSON.parse(message.body))
+      },
+      (error) => {
+        console.error('Error subscribing to room:', error)
+      }
+    )
   } else {
-    console.error('stompClient is not connected');
+    console.error('stompClient is not connected')
   }
-};
+}
 
 const connect = () => {
-  messageStore.connectWebSocket();
-  const { stompClient } = messageStore;
+  messageStore.connectWebSocket()
+  const { stompClient } = messageStore
 
-  stompClient.connect({}, frame => {
-    console.log('Connected: ' + frame);
-    roomMessageIds.forEach(roomMessageId => {
-      subscribeToRoom(stompClient, roomMessageId);
-    });
-  });
-};
-
-  onBeforeMount(() => {
-
-    connect();
-    
-  })
-  
-  onMounted(async () => {
-    try {
-      isLoading.value = true
-      const { data } = await api.getMessageNearest();
-      listRoomMessageInfo.value = data
-      await subscribeToRoom();
-    } catch (error) {
-      isLoading.value = true
-      message.error(error.message)
-    } finally {
-      isLoading.value = false
+  stompClient.connect({}, (frame) => {
+    console.log('Connected: ' + frame)
+    if (roomMessageIds.value.length > 0) {
+      roomMessageIds.value.forEach((roomMessageId) => {
+        subscribeToRoom(stompClient, roomMessageId)
+      })
     }
   })
-  console.log(listRoomMessageInfo)
-  
-  function redirectRoom(room) {
-  const roomId = room[0].roomMessageId
-
-  router.push({ name: 'MessageDetail', params: { id: roomId } })
 }
+
+onMounted(async () => {
+  try {
+    isLoading.value = true
+    const { data } = await api.getMessageNearest()
+    listRoomMessageInfo.value = data
+    roomMessageIds.value = data.map((room) => room.id)
+    connect()
+    subscribeToRoom()
+  } catch (error) {
+    isLoading.value = true
+    message.error(error.message)
+  } finally {
+    isLoading.value = false
+  }
+})
+console.log(listRoomMessageInfo)
 </script>
 
 <template>

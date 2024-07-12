@@ -3,18 +3,12 @@ import { formatDate } from '@/utils/format-date'
 import { RouterLink } from 'vue-router'
 
 const { message } = defineProps(['message'])
-const emit = defineEmits(['messageSelected'])
-
-const handleClick = () => {
-  emit('messageSelected', message.roomMessageId)
-}
 </script>
 
 <template>
   <RouterLink
     class="flex items-center gap-3 px-3 py-2 rounded-lg"
     exact-active-class="bg-gray-100"
-    @click="handleClick"
     :to="{ name: 'MessageDetail', params: { id: message.roomMessageId } }"
   >
     <div class="relative">
